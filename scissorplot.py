@@ -1,4 +1,4 @@
-from matplotlib import pyplot
+import matplotlib.pyplot as plt
 import numpy as np
 from openpyxl import load_workbook
 
@@ -52,6 +52,7 @@ clt = -1  # Tail CL
 mtow = 35590  # kg
 g = 9.81  # m/s/s
 h0 = params['WingChordStart']/c_bar
+print("h0 = " + str(h0))
 
 
 def noseWheel():
@@ -68,16 +69,38 @@ def mainGearReaction():
 
 def takeOffRotation(h):
     cl_moment = cl_to * (h-h0)
+    print(cl_moment)
     ct_moment = cthrust * 0.25/c_bar  # Approx cg offset pos
+    print(cthrust)
     main_gear_moment_distance = (params['MainGearPos']/c_bar) - h
+    print(main_gear_moment_distance)
     weight_nondim = g*mtow/qS(vto)
+    print(weight_nondim)
     tail_moment_arm = (params['TailRootRearPlane']/c_bar) - h
+    print(tail_moment_arm)
 
     lhs_top = cm0 + cl_moment + ct_moment - (main_gear_moment_distance * (weight_nondim-cl_to))
-    lhs_bottom = (main_gear_moment_distance * cl_to) + (clt * tail_moment_arm)
+    lhs_bottom = (clt * tail_moment_arm) - (main_gear_moment_distance * clt)
 
     return lhs_top/lhs_bottom
 
 
+print(takeOffRotation(5.65))
 
-print(takeOffRotation(5.6))
+
+def plotit(r1, r2):
+    # Create Range of h values
+    r2 = r2 + 0.1
+    x_h = np.arange(r1, r2, 0.1)
+    fig = plt.figure(figsize=(10, 7))
+    ax = fig.add_subplot(1, 1, 1)
+    ax.xaxis.set_ticks_position('bottom')
+    plt.xlabel("h")
+    plt.ylabel("ST/S")
+    plt.plot(x_h, takeOffRotation(x_h))
+    plt.plot([noseWheel(), noseWheel()], [min(takeOffRotation(x_h)), max(takeOffRotation(x_h))])
+    plt.show()
+
+
+plotit(5.4, 6.2)
+
