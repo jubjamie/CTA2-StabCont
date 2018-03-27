@@ -9,7 +9,7 @@ Stability and Control Calculations for GBDP CTA Project. Key aims of this work:
 These will be sized according to a number of different methods and scenarios. For example, one engine inoperative (OEI) cases or static stability margins.
 
 ## Sizing Graphs
-###Scissor Plot
+### Scissor Plot
 Current Scissor Plot
 <p align="center">
 <img src="plot.png?raw=true" />
