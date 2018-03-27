@@ -41,6 +41,14 @@ def qS(v):
     return 0.5 * 1.225 * params['Sarea'] * (v**2)
 
 
+def myceil(x, base):
+    return (base * np.ceil(float(x)/base))
+
+
+def myfloor(x, base):
+    return (base * np.floor(float(x)/base))
+
+
 # Key Aircraft Params
 c_bar = np.mean([params['Ct'], params['Cr']])
 maxthrust = 44538  # N @ takoff
@@ -53,6 +61,7 @@ mtow = 35590  # kg
 g = 9.81  # m/s/s
 h0 = params['WingChordStart']/c_bar
 print("h0 = " + str(h0))
+mtow_pos = (14.436+0.364)/c_bar  # Approx P2B mtow pos from GA
 
 
 def noseWheel():
@@ -90,16 +99,44 @@ print(takeOffRotation(5.65))
 
 def plotit(r1, r2):
     # Create Range of h values
-    r2 = r2 + 0.1
+    step = 0.1
+    r2 = r2 + step
     x_h = np.arange(r1, r2, 0.1)
     fig = plt.figure(figsize=(10, 7))
     ax = fig.add_subplot(1, 1, 1)
     ax.xaxis.set_ticks_position('bottom')
+    y_tails = []
+    y_heads = []
     plt.xlabel("h")
     plt.ylabel("ST/S")
     plt.plot(x_h, takeOffRotation(x_h))
-    plt.plot([noseWheel(), noseWheel()], [min(takeOffRotation(x_h)), max(takeOffRotation(x_h))])
+    y_tails.append(min(takeOffRotation(x_h)))
+    y_heads.append(max(takeOffRotation(x_h)))
+
+    """This section constrains the graph correctly"""
+    max_y = myceil(max(y_heads), step)
+    print(max_y)
+    min_y = myfloor((min(y_tails)), step)
+    print(min_y)
+    plt.ylim(min_y, max_y)
+    plt.xlim(r1, r2-0.1)
+
+    """Reference Plots
+    This section plots reference points for the current aircraft configuration absed on data from the CAD param file"""
+    ref_tail = min_y
+    ref_head = ((max_y-ref_tail)*0.05) + ref_tail
+
+    # Plot the noseWheel conditions
+    plt.plot([noseWheel(), noseWheel()], [min_y, max_y])
+
+    # Plot h0 position
+    plt.plot([h0, h0], [ref_tail, ref_head])
+    plt.annotate("Wing Position", [h0, ref_head])
+    # Plot MTOW CoG position (approx)
+    plt.plot([mtow_pos, mtow_pos], [ref_tail, ref_head])
+    plt.annotate("MTOW C.o.G", [mtow_pos, ref_head])
     plt.show()
+    plt.savefig("plot.png")
 
 
 plotit(5.4, 6.2)
