@@ -135,8 +135,8 @@ def plotit(r1, r2):
     # Plot MTOW CoG position (approx)
     plt.plot([mtow_pos, mtow_pos], [ref_tail, ref_head])
     plt.annotate("MTOW C.o.G", [mtow_pos, ref_head])
-    plt.show()
     plt.savefig("plot.png")
+    plt.show()
 
 
 plotit(5.4, 6.2)
