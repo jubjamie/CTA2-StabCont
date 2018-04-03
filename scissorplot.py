@@ -78,18 +78,18 @@ def mainGearReaction():
 
 def takeOffRotation(h):
     cl_moment = cl_to * (h-h0)  # CL * distance between h and h0 (Centre of Lift)
-    print(cl_moment)
-    ct_moment = cthrust * 0.25/c_bar  # Thrust Coeef * vertical distance to CoG (i.e. h)
-    print(cthrust)
+    print("cl moment = " + str(cl_moment))
+    ct_moment = cthrust * 0.5/c_bar  # Thrust Coeef * vertical distance to CoG (i.e. h)
+    print("ct moment = " + str(cthrust))
     main_gear_moment_distance = (params['MainGearPos']/c_bar) - h  # Distance of main gear to h
-    print(main_gear_moment_distance)
+    print("gear pos - h = " + str(main_gear_moment_distance))
     weight_nondim = g*mtow/qS(vto)  # The weight/qS
-    print(weight_nondim)
+    print("W/qs = " + str(weight_nondim))
     tail_moment_arm = (params['TailRootRearPlane']/c_bar) - h  # The tail moment to h
-    print(tail_moment_arm)
+    print("Tail moment arm distance = " + str(tail_moment_arm))
 
-    lhs_top = cm0 + cl_moment + ct_moment - (main_gear_moment_distance * (weight_nondim-cl_to))
-    #         Cm0 + cl(h-h0)  + ct(dist)  - reaction distance * the weight minus the cl lift
+    lhs_top = cm0 + cl_moment - ct_moment - (main_gear_moment_distance * (weight_nondim-cl_to))
+    #         Cm0 + cl(h-h0)  - ct(dist)  - reaction distance * the weight minus the cl lift
     lhs_bottom = (clt * tail_moment_arm) - (main_gear_moment_distance * clt)
     #            (tail lift * moment arm) - (distance * the rest of the vertically resolved bit)
 
@@ -117,9 +117,9 @@ def plotit(r1, r2):
 
     """This section constrains the graph correctly"""
     max_y = myceil(max(y_heads), step)
-    print(max_y)
+    #print(max_y)
     min_y = myfloor((min(y_tails)), step)
-    print(min_y)
+    #print(min_y)
     plt.ylim(min_y, max_y)
     plt.xlim(r1, r2-0.1)
 
