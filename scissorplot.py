@@ -96,6 +96,20 @@ def takeOffRotation(h):
     return lhs_top/lhs_bottom
 
 
+def kn(h):
+    kn_limit = 0.05
+    tail_moment_arm = (params['TailRootRearPlane'] / c_bar) - h  # The tail moment to h
+    a1 = 4.2
+    a = 5.8
+    d_e_alpha = 0.2
+
+    lhs_top = kn_limit - h0 + h
+    lhs_bottom = tail_moment_arm * (a1/a) * (1-(d_e_alpha))
+
+    return lhs_top/lhs_bottom
+
+
+
 print(takeOffRotation(5.65))
 
 
@@ -114,6 +128,10 @@ def plotit(r1, r2):
     plt.plot(x_h, takeOffRotation(x_h))
     y_tails.append(min(takeOffRotation(x_h)))
     y_heads.append(max(takeOffRotation(x_h)))
+
+    plt.plot(x_h, kn(x_h))
+    y_tails.append(min(kn(x_h)))
+    y_heads.append(max(kn(x_h)))
 
     """This section constrains the graph correctly"""
     max_y = myceil(max(y_heads), step)
