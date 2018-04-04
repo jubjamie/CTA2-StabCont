@@ -86,12 +86,15 @@ def takeOffRotation(h):
     weight_nondim = g*mtow/qS(vto)  # The weight/qS
     print("W/qs = " + str(weight_nondim))
     tail_moment_arm = (13/c_bar) - (h0-h)  # The tail moment to h
-    print("Tail moment arm distance = " + str(tail_moment_arm))
+    print("Tail moment arm distance 1 = " + str(tail_moment_arm))
+    print("Tail moment arm distance 2 = " + str(-h0+h+(13/c_bar)))
+
+
 
     lhs_top = cm0 + cl_moment + ct_moment - (main_gear_moment_distance * (weight_nondim-cl_to))
     #         Cm0 + cl(h-h0)  - ct(dist)  - reaction distance * the weight minus the cl lift
     # print("top = " + str(lhs_top))
-    lhs_bottom = (-clt*main_gear_moment_distance)-(clt*(-h0+h+(13/c_bar)))
+    lhs_bottom = (-clt*main_gear_moment_distance)-(clt*(tail_moment_arm))
     #            (tail lift * moment arm) - (distance * the rest of the vertically resolved bit)
     print("bottom = " + str(lhs_bottom))
 
