@@ -77,7 +77,7 @@ def mainGearReaction():
 
 
 def takeOffRotation(h):
-    cl_moment = cl_to * (h-h0)  # CL * distance between h and h0 (Centre of Lift)
+    cl_moment = cl_to * (h0-h)  # CL * distance between h and h0 (Centre of Lift)
     print("cl moment = " + str(cl_moment))
     ct_moment = cthrust * 0.5/c_bar  # Thrust Coeef * vertical distance to CoG (i.e. h)
     print("ct moment = " + str(cthrust))
@@ -88,12 +88,12 @@ def takeOffRotation(h):
     tail_moment_arm = (params['TailRootRearPlane']/c_bar) - h  # The tail moment to h
     print("Tail moment arm distance = " + str(tail_moment_arm))
 
-    lhs_top = cm0 + cl_moment + ct_moment - (main_gear_moment_distance * (weight_nondim-cl_to))
+    lhs_top = cm0 + cl_moment + ct_moment - (main_gear_moment_distance * (weight_nondim - cl_to))
     #         Cm0 + cl(h-h0)  - ct(dist)  - reaction distance * the weight minus the cl lift
     # print("top = " + str(lhs_top))
-    lhs_bottom = ((clt * tail_moment_arm) - (main_gear_moment_distance * clt))
+    lhs_bottom = (clt*(main_gear_moment_distance-tail_moment_arm))
     #            (tail lift * moment arm) - (distance * the rest of the vertically resolved bit)
-    # print("bottom = " + str(lhs_bottom))
+    print("bottom = " + str(lhs_bottom))
 
     return lhs_top/lhs_bottom
 
