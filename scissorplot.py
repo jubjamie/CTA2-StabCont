@@ -77,7 +77,7 @@ def mainGearReaction():
 
 
 def takeOffRotation(h):
-    cl_moment = cl_to * (h-h0)  # CL * distance between h and h0 (Centre of Lift)
+    cl_moment = cl_to * (h0-h)  # CL * distance between h and h0 (Centre of Lift)
     print("cl moment = " + str(cl_moment))
     ct_moment = cthrust * 0.5/c_bar  # Thrust Coeef * vertical distance to CoG (i.e. h)
     print("ct moment = " + str(cthrust))
@@ -90,17 +90,19 @@ def takeOffRotation(h):
 
     lhs_top = cm0 + cl_moment - ct_moment - (main_gear_moment_distance * (weight_nondim-cl_to))
     #         Cm0 + cl(h-h0)  - ct(dist)  - reaction distance * the weight minus the cl lift
-    lhs_bottom = (clt * tail_moment_arm) - (main_gear_moment_distance * clt)
+    # print("top = " + str(lhs_top))
+    lhs_bottom = -((clt * tail_moment_arm) - (main_gear_moment_distance * clt))
     #            (tail lift * moment arm) - (distance * the rest of the vertically resolved bit)
+    # print("bottom = " + str(lhs_bottom))
 
     return lhs_top/lhs_bottom
 
 
 def kn(h):
     kn_limit = 0.05
-    tail_moment_arm = (params['TailRootRearPlane'] / c_bar) - h  # The tail moment to h
-    a1 = 4.2
-    a = 5.8
+    tail_moment_arm = (params['TailRootRearPlane'] / c_bar) - h0  # The tail moment to h
+    a1 = 4.5
+    a = 5.14
     d_e_alpha = 0.2
 
     lhs_top = kn_limit - h0 + h
@@ -151,13 +153,25 @@ def plotit(r1, r2):
 
     # Plot h0 position
     plt.plot([h0, h0], [ref_tail, ref_head])
-    plt.annotate("Wing Position", [h0, ref_head])
+    plt.annotate("Wing h0 Position", [h0, ref_head])
     # Plot MTOW CoG position (approx)
-    plt.plot([mtow_pos, mtow_pos], [ref_tail, ref_head])
-    plt.annotate("MTOW C.o.G", [mtow_pos, ref_head])
+    plt.plot([mtow_pos, mtow_pos], [ref_tail, ref_head+0.05])
+    plt.annotate("MTOW C.o.G", [mtow_pos, ref_head+0.05])
+    # Plot Wing LE/TE position (approx)
+    wingLE = (params['WingCentrePoint']-(params['Cr']/2))/c_bar
+    wingTE = (params['WingCentrePoint'] + (params['Cr'] / 2)) / c_bar
+    plt.plot([wingLE, wingLE], [ref_tail, ref_head])
+    plt.annotate("Wing LE", [wingLE, ref_head])
+    plt.plot([wingTE, wingTE], [ref_tail, ref_head])
+    plt.annotate("Wing TE", [wingTE, ref_head])
+    #Main Gear Position
+    mainpos = params['MainGearPos']/c_bar
+    plt.plot([mainpos, mainpos], [ref_tail, ref_head])
+    plt.annotate("Main Gear Pos", [mainpos, ref_head])
     plt.savefig("plot.png")
+    plt.grid(True)
     plt.show()
 
 
-plotit(5.4, 6.2)
+plotit(5, 6.25)
 
