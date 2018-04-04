@@ -119,7 +119,7 @@ def kn(h):
 
 
 
-print(takeOffRotation(5.65))
+#print(takeOffRotation(5.65))
 
 
 def plotit(r1, r2):
