@@ -65,11 +65,12 @@ mtow_pos = (14.436+0.364)/c_bar  # Approx P2B mtow pos from GA
 
 
 def noseWheel():
-    nosepos = params['NoseGearPos']
-    mainpos = params['MainGearPos']
+    c_bar = 2.83
+    nosepos = 1.8
+    mainpos = 14.1975
     condition_point = (0.975*(mainpos-nosepos)) + nosepos
     return condition_point/c_bar
-
+print(noseWheel())
 
 def mainGearReaction():
     total_weight = mtow/qS(vto)
