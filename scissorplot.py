@@ -50,23 +50,23 @@ def myfloor(x, base):
 
 
 # Key Aircraft Params
-c_bar = np.mean([params['Ct'], params['Cr']])
+c_bar = 2.83
 maxthrust = 44538  # N @ takoff
-vto = 62.1  # m/s
-cthrust = maxthrust / qS(vto)
-cm0 = -0.0663
-cl_to = 2.549
+vto = 58.3  # m/s
+cthrust = 0.6495
+cm0 = -0.1307
+cl_to = 2.7
 clt = -1  # Tail CL
-mtow = 35590  # kg
+mtow = 35000  # kg
 g = 9.81  # m/s/s
-h0 = params['WingChordStart']/c_bar
+h0 = 4.7595
 print("h0 = " + str(h0))
 mtow_pos = (14.436+0.364)/c_bar  # Approx P2B mtow pos from GA
 
 
 def noseWheel():
-    nosepos = params['NoseGearPos']
-    mainpos = params['MainGearPos']
+    nosepos = 1.8
+    mainpos = 14.1975
     condition_point = (0.975*(mainpos-nosepos)) + nosepos
     return condition_point/c_bar
 
@@ -77,29 +77,29 @@ def mainGearReaction():
 
 
 def takeOffRotation(h):
-    cl_moment = cl_to * (h-h0)  # CL * distance between h and h0 (Centre of Lift)
+    cl_moment = cl_to * (h0-h)  # CL * distance between h and h0 (Centre of Lift)
     print("cl moment = " + str(cl_moment))
-    ct_moment = cthrust * 0.5/c_bar  # Thrust Coeef * vertical distance to CoG (i.e. h)
+    ct_moment = cthrust * 1.47/c_bar  # Thrust Coeef * vertical distance to CoG (i.e. h)
     print("ct moment = " + str(cthrust))
-    main_gear_moment_distance = (params['MainGearPos']/c_bar) - h  # Distance of main gear to h
+    main_gear_moment_distance = (14.1975/c_bar) - h  # Distance of main gear to h
     print("gear pos - h = " + str(main_gear_moment_distance))
     weight_nondim = g*mtow/qS(vto)  # The weight/qS
     print("W/qs = " + str(weight_nondim))
-    tail_moment_arm = (params['TailRootRearPlane']/c_bar) - h  # The tail moment to h
+    tail_moment_arm = (13/c_bar) - (h0-h)  # The tail moment to h
     print("Tail moment arm distance = " + str(tail_moment_arm))
 
     lhs_top = cm0 + cl_moment + ct_moment - (main_gear_moment_distance * (weight_nondim-cl_to))
     #         Cm0 + cl(h-h0)  - ct(dist)  - reaction distance * the weight minus the cl lift
     # print("top = " + str(lhs_top))
-    lhs_bottom = ((clt * tail_moment_arm) - (main_gear_moment_distance * clt))
+    lhs_bottom = (-clt*main_gear_moment_distance)-(clt*(-h0+h+(13/c_bar)))
     #            (tail lift * moment arm) - (distance * the rest of the vertically resolved bit)
-    # print("bottom = " + str(lhs_bottom))
+    print("bottom = " + str(lhs_bottom))
 
     return lhs_top/lhs_bottom
 
 
 def landing(h):
-    tail_moment_arm = (params['TailRootRearPlane'] / c_bar) - h0
+    tail_moment_arm = (13 / c_bar)
     lhs_top = cm0 - (cl_to*(h0-h))
     lhs_bottom = clt * tail_moment_arm
     return lhs_top/lhs_bottom
@@ -107,7 +107,7 @@ def landing(h):
 
 def kn(h):
     kn_limit = 0.05
-    tail_moment_arm = (params['TailRootRearPlane'] / c_bar) - h0  # The tail moment to h
+    tail_moment_arm = (13 / c_bar)  # The tail moment to h
     a1 = 4.5
     a = 5.14
     d_e_alpha = 0.2
@@ -185,5 +185,5 @@ def plotit(r1, r2):
     plt.show()
 
 
-plotit(5, 7)
+plotit(4.2, 5.2)
 
