@@ -65,12 +65,11 @@ mtow_pos = (14.436+0.364)/c_bar  # Approx P2B mtow pos from GA
 
 
 def noseWheel():
-    c_bar = 2.83
-    nosepos = 1.8
-    mainpos = 14.1975
+    nosepos = params['NoseGearPos']
+    mainpos = params['MainGearPos']
     condition_point = (0.975*(mainpos-nosepos)) + nosepos
     return condition_point/c_bar
-print(noseWheel())
+
 
 def mainGearReaction():
     total_weight = mtow/qS(vto)
@@ -78,7 +77,7 @@ def mainGearReaction():
 
 
 def takeOffRotation(h):
-    cl_moment = cl_to * (h0-h)  # CL * distance between h and h0 (Centre of Lift)
+    cl_moment = cl_to * (h-h0)  # CL * distance between h and h0 (Centre of Lift)
     print("cl moment = " + str(cl_moment))
     ct_moment = cthrust * 0.5/c_bar  # Thrust Coeef * vertical distance to CoG (i.e. h)
     print("ct moment = " + str(cthrust))
@@ -89,13 +88,20 @@ def takeOffRotation(h):
     tail_moment_arm = (params['TailRootRearPlane']/c_bar) - h  # The tail moment to h
     print("Tail moment arm distance = " + str(tail_moment_arm))
 
-    lhs_top = cm0 + cl_moment - ct_moment - (main_gear_moment_distance * (weight_nondim-cl_to))
+    lhs_top = cm0 + cl_moment + ct_moment - (main_gear_moment_distance * (weight_nondim-cl_to))
     #         Cm0 + cl(h-h0)  - ct(dist)  - reaction distance * the weight minus the cl lift
     # print("top = " + str(lhs_top))
-    lhs_bottom = -((clt * tail_moment_arm) - (main_gear_moment_distance * clt))
+    lhs_bottom = ((clt * tail_moment_arm) - (main_gear_moment_distance * clt))
     #            (tail lift * moment arm) - (distance * the rest of the vertically resolved bit)
     # print("bottom = " + str(lhs_bottom))
 
+    return lhs_top/lhs_bottom
+
+
+def landing(h):
+    tail_moment_arm = (params['TailRootRearPlane'] / c_bar) - h0
+    lhs_top = cm0 - (cl_to*(h0-h))
+    lhs_bottom = clt * tail_moment_arm
     return lhs_top/lhs_bottom
 
 
@@ -128,13 +134,17 @@ def plotit(r1, r2):
     y_heads = []
     plt.xlabel("h")
     plt.ylabel("ST/S")
-    plt.plot(x_h, takeOffRotation(x_h))
+    plt.plot(x_h, takeOffRotation(x_h), label='Take Off')
     y_tails.append(min(takeOffRotation(x_h)))
     y_heads.append(max(takeOffRotation(x_h)))
 
-    plt.plot(x_h, kn(x_h))
+    plt.plot(x_h, kn(x_h), label='Kn > 0.05')
     y_tails.append(min(kn(x_h)))
     y_heads.append(max(kn(x_h)))
+
+    plt.plot(x_h, landing(x_h), label='Landing')
+    y_tails.append(min(landing(x_h)))
+    y_heads.append(max(landing(x_h)))
 
     """This section constrains the graph correctly"""
     max_y = myceil(max(y_heads), step)
@@ -150,7 +160,7 @@ def plotit(r1, r2):
     ref_head = ((max_y-ref_tail)*0.05) + ref_tail
 
     # Plot the noseWheel conditions
-    plt.plot([noseWheel(), noseWheel()], [min_y, max_y])
+    plt.plot([noseWheel(), noseWheel()], [min_y, max_y], label='Nose-Wheel Reaction')
 
     # Plot h0 position
     plt.plot([h0, h0], [ref_tail, ref_head])
@@ -170,9 +180,10 @@ def plotit(r1, r2):
     plt.plot([mainpos, mainpos], [ref_tail, ref_head])
     plt.annotate("Main Gear Pos", [mainpos, ref_head])
     plt.grid(True)
+    plt.legend(loc='lower left', shadow=True)
     plt.savefig("plot.png")
     plt.show()
 
 
-plotit(5, 6.25)
+plotit(5, 7)
 
