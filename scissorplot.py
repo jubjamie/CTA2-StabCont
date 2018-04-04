@@ -168,8 +168,8 @@ def plotit(r1, r2):
     mainpos = params['MainGearPos']/c_bar
     plt.plot([mainpos, mainpos], [ref_tail, ref_head])
     plt.annotate("Main Gear Pos", [mainpos, ref_head])
-    plt.savefig("plot.png")
     plt.grid(True)
+    plt.savefig("plot.png")
     plt.show()
 
 
