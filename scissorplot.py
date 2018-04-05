@@ -130,7 +130,7 @@ def size_finder_range(x_h, left_y, right_y, static_y, hrange):
         y_find.append(zl_poly(x_find_i))
 
     for y_ar in static_y:
-        x_find_i = y_ar
+        x_find_i = y_ar - hrange
         x_find.append(x_find_i)
         zl = np.polyfit(x_h, left_y, 1)
         zl_poly = np.poly1d(zl)
