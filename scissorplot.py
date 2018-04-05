@@ -78,22 +78,22 @@ def mainGearReaction():
 
 def takeOffRotation(h):
     cl_moment = cl_to * (h0-h)  # CL * distance between h and h0 (Centre of Lift)
-    print("cl moment = " + str(cl_moment))
+    # print("cl moment = " + str(cl_moment))
     ct_moment = cthrust * 0.5/c_bar  # Thrust Coeef * vertical distance to CoG (i.e. h)
-    print("ct moment = " + str(cthrust))
+    # print("ct moment = " + str(cthrust))
     main_gear_moment_distance = (params['MainGearPos']/c_bar) - h  # Distance of main gear to h
-    print("gear pos - h = " + str(main_gear_moment_distance))
+    # print("gear pos - h = " + str(main_gear_moment_distance))
     weight_nondim = g*mtow/qS(vto)  # The weight/qS
-    print("W/qs = " + str(weight_nondim))
+    # print("W/qs = " + str(weight_nondim))
     tail_moment_arm = (params['TailRootRearPlane']/c_bar) - h  # The tail moment to h
-    print("Tail moment arm distance = " + str(tail_moment_arm))
+    # print("Tail moment arm distance = " + str(tail_moment_arm))
 
     lhs_top = cm0 + cl_moment + ct_moment - (main_gear_moment_distance * (weight_nondim - cl_to))
     #         Cm0 + cl(h-h0)  - ct(dist)  - reaction distance * the weight minus the cl lift
     # print("top = " + str(lhs_top))
     lhs_bottom = (clt*(main_gear_moment_distance-tail_moment_arm))
     #            (tail lift * moment arm) - (distance * the rest of the vertically resolved bit)
-    print("bottom = " + str(lhs_bottom))
+    # print("bottom = " + str(lhs_bottom))
 
     return lhs_top/lhs_bottom
 
@@ -140,6 +140,9 @@ def size_finder_range(x_h, left_y, right_y, static_y, hrange):
     x_res = x_find[y_find.index(y_res)]
 
     output = [x_res, x_res+hrange, y_res]
+
+    print(y_find)
+    print(x_find)
     return output
 
 
@@ -209,7 +212,8 @@ def plotit(r1, r2):
     plt.plot([size[0], size[1]], [size[2], size[2]])
     plt.annotate("SH/S = " + str(format(size[2], '.2f')) + " : Size = " + str(format(size[2]*params['Sarea'], '.2f')), [size[0], size[2]+0.05])
     plt.annotate("h Range: " + str(format(size[0], '.2f')) + " <> " + str(format(size[1], '.2f')), [size[0], size[2]+0.1])
-
+    print("h Range: " + str(format(size[0], '.2f')) + " <> " + str(format(size[1], '.2f')))
+    print("SH/S = " + str(format(size[2], '.2f')) + " : Size = " + str(format(size[2]*params['Sarea'], '.2f')))
     plt.grid(True)
     plt.legend(loc='lower left', shadow=True)
     plt.savefig("plot.png")
