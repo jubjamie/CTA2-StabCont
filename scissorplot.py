@@ -108,8 +108,8 @@ def landing(h):
 def kn(h):
     kn_limit = 0.05
     tail_moment_arm = (params['TailRootRearPlane'] / c_bar) - h0  # The tail moment to h
-    a1 = 4.5
-    a = 5.14
+    a1 = 5.98  # From Horace
+    a = 5.14  # From Horace
     d_e_alpha = 0.2
 
     lhs_top = kn_limit - h0 + h
