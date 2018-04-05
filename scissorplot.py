@@ -141,8 +141,6 @@ def size_finder_range(x_h, left_y, right_y, static_y, hrange):
 
     output = [x_res, x_res+hrange, y_res]
 
-    print(y_find)
-    print(x_find)
     return output
 
 
