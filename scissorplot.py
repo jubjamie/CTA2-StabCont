@@ -213,7 +213,7 @@ def plotit(r1, r2):
     print("h Range: " + str(format(size[0], '.2f')) + " <> " + str(format(size[1], '.2f')))
     print("SH/S = " + str(format(size[2], '.2f')) + " : Size = " + str(format(size[2]*params['Sarea'], '.2f')))
     plt.grid(True)
-    plt.legend(loc='lower left', shadow=True)
+    plt.legend(loc='upper right', shadow=True)
     plt.savefig("plot.png")
     plt.show()
 
