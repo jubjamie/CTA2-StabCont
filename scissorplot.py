@@ -118,8 +118,29 @@ def kn(h):
     return lhs_top/lhs_bottom
 
 
+def size_finder_range(x_h, left_y, right_y, static_y, hrange):
+    y_find = []
+    x_find = []
+    for y_ar in right_y:
+        zr = np.polyfit(x_h, y_ar, 1)
+        zl = np.polyfit(x_h, left_y, 1)
+        x_find_i = ((zr[0]*hrange)+zr[1]-zl[1])/(zl[0]-zr[0])
+        x_find.append(x_find_i)
+        zl_poly = np.poly1d(zl)
+        y_find.append(zl_poly(x_find_i))
 
-#print(takeOffRotation(5.65))
+    for y_ar in static_y:
+        x_find_i = y_ar
+        x_find.append(x_find_i)
+        zl = np.polyfit(x_h, left_y, 1)
+        zl_poly = np.poly1d(zl)
+        y_find.append(zl_poly(x_find_i))
+
+    y_res = max(y_find)
+    x_res = x_find[y_find.index(y_res)]
+
+    output = [x_res, x_res+hrange, y_res]
+    return output
 
 
 def plotit(r1, r2):
@@ -179,6 +200,16 @@ def plotit(r1, r2):
     mainpos = params['MainGearPos']/c_bar
     plt.plot([mainpos, mainpos], [ref_tail, ref_head])
     plt.annotate("Main Gear Pos", [mainpos, ref_head])
+
+    """Result Plots
+    This section plots the results of the size finder. There are two options to call. One finds via a delta h range,
+    the other via known fwd and aft positions"""
+    # Known Delta h range
+    size = size_finder_range(x_h, takeOffRotation(x_h), [kn(x_h)], [noseWheel()], 0.4)
+    plt.plot([size[0], size[1]], [size[2], size[2]])
+    plt.annotate("SH/S = " + str(format(size[2], '.2f')) + " : Size = " + str(format(size[2]*params['Sarea'], '.2f')), [size[0], size[2]+0.05])
+    plt.annotate("h Range: " + str(format(size[0], '.2f')) + " <> " + str(format(size[1], '.2f')), [size[0], size[2]+0.1])
+
     plt.grid(True)
     plt.legend(loc='lower left', shadow=True)
     plt.savefig("plot.png")
