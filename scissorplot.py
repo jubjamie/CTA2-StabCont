@@ -118,7 +118,7 @@ def kn(h):
     return lhs_top/lhs_bottom
 
 
-def size_finder_range(x_h, left_y, right_y, static_y, hrange):
+def size_finder_delta(x_h, left_y, right_y, static_y, hrange):
     y_find = []
     x_find = []
     for y_ar in right_y:
@@ -140,6 +140,44 @@ def size_finder_range(x_h, left_y, right_y, static_y, hrange):
     x_res = x_find[y_find.index(y_res)]
 
     output = [x_res, x_res+hrange, y_res]
+
+    return output
+
+
+def size_finder_range(x_h, left_y, right_y, static_y, hf, ha):
+    y_find = []
+    x_find = []
+    x_find_a = []
+    # Find hf y point
+    zl = np.polyfit(x_h, left_y, 1)
+    zlf = np.poly1d(zl)
+    hf_y = zlf(hf)
+
+    for y_ar in right_y:
+        zr = np.polyfit(x_h, y_ar, 1)
+        zrf = np.poly1d(zr)
+        ha_y = zrf(ha)
+        y_find.append(ha_y)
+        x_find.append(ha)
+
+    for y_ar in static_y:
+        y_find.append(zlf(hf))
+        x_find.append(y_ar)
+
+    # Find the highest right y
+    if max(y_find) > hf_y:
+        output = [(zlf - max(y_find)).roots[0], x_find[y_find.index(max(y_find))], max(y_find)]
+    else:
+        for y_ar in right_y:
+            zr = np.polyfit(x_h, y_ar, 1)
+            zrf = np.poly1d(zr)
+            ha_x = (zrf - hf_y).roots[0]
+            x_find_a.append(ha_x)
+
+        for y_ar in static_y:
+            x_find_a.append(y_ar)
+        print(x_find_a)
+        output = [hf, min(x_find_a), hf_y]
 
     return output
 
@@ -206,7 +244,8 @@ def plotit(r1, r2):
     This section plots the results of the size finder. There are two options to call. One finds via a delta h range,
     the other via known fwd and aft positions"""
     # Known Delta h range
-    size = size_finder_range(x_h, takeOffRotation(x_h), [kn(x_h)], [noseWheel()], 0.4)
+    #size = size_finder_delta(x_h, takeOffRotation(x_h), [kn(x_h)], [noseWheel()], 0.4)
+    size = size_finder_range(x_h, takeOffRotation(x_h), [kn(x_h)], [noseWheel()], 5.5, 6.2)
     plt.plot([size[0], size[1]], [size[2], size[2]])
     plt.annotate("SH/S = " + str(format(size[2], '.2f')) + " : Size = " + str(format(size[2]*params['Sarea'], '.2f')), [size[0], size[2]+0.05])
     plt.annotate("h Range: " + str(format(size[0], '.2f')) + " <> " + str(format(size[1], '.2f')), [size[0], size[2]+0.1])
