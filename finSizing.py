@@ -58,19 +58,19 @@ Kr = 0.9
 blade_count = 6
 blade_diameter = params['EnginePropDiameter']
 blade_centre = params['EngineWingPosOutboard']
-lvtp = 12
 engine_scale = 0.89
 engine_intake_area = 0.16 * engine_scale
 engine_diameter = np.sqrt(engine_intake_area/np.pi)*2
+h0 = params['WingChordStart']/c_bar
+mtow_pos = (14.436+0.364)/c_bar  # Approx P2B mtow pos from GA
 print(engine_diameter)
 
 
 def take_off_yaw():
+    lvtp = ((params['TailRootRearPlane'] / c_bar) - h0) * c_bar
     lhs_top = (cthrust + c_drag_engine())*(blade_centre/c_bar)
     lhs_bottom = (dr * Kr * dcyV_dd * lvtp)/c_bar
-    print(lhs_top)
-    print(lhs_bottom)
-    return params['Sarea'] * lhs_top/lhs_bottom
+    return lhs_top/lhs_bottom
 
 
 def c_drag_engine():
