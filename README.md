@@ -14,3 +14,9 @@ Current Scissor Plot from <a href="scissorplot.py">scissorplot.py</a>.
 <p align="center">
 <img src="tailplot.png?raw=true" />
 </p>
+<br />
+### Fin/VTP Plot
+Current VTP Plot from <a href="finSizing.py">finSizing.py</a>.
+<p align="center">
+<img src="finplot.png?raw=true" />
+</p>
