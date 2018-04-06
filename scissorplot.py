@@ -51,8 +51,8 @@ def myfloor(x, base):
 
 # Key Aircraft Params
 c_bar = np.mean([params['Ct'], params['Cr']])
-maxthrust = 44538  # N @ takoff
-vto = 62.1  # m/s
+maxthrust = 44459 * 2  # N @ takoff
+vto = 62.4  # m/s
 cthrust = maxthrust / qS(vto)
 cm0 = -0.0663
 cl_to = 2.549
@@ -88,7 +88,7 @@ def takeOffRotation(h):
     tail_moment_arm = (params['TailRootRearPlane']/c_bar) - h  # The tail moment to h
     # print("Tail moment arm distance = " + str(tail_moment_arm))
 
-    lhs_top = cm0 + cl_moment + ct_moment - (main_gear_moment_distance * (weight_nondim - cl_to))
+    lhs_top = cm0 + cl_moment - ct_moment - (main_gear_moment_distance * (weight_nondim - cl_to))
     #         Cm0 + cl(h-h0)  - ct(dist)  - reaction distance * the weight minus the cl lift
     # print("top = " + str(lhs_top))
     lhs_bottom = (clt*(main_gear_moment_distance-tail_moment_arm))
