@@ -66,7 +66,11 @@ print(engine_diameter)
 
 
 def take_off_yaw():
-    pass
+    lhs_top = (cthrust + c_drag_engine())*(blade_centre/c_bar)
+    lhs_bottom = (dr * Kr * dcyV_dd * lvtp)/c_bar
+    print(lhs_top)
+    print(lhs_bottom)
+    return params['Sarea'] * lhs_top/lhs_bottom
 
 
 def c_drag_engine():
@@ -76,4 +80,4 @@ def c_drag_engine():
     return cd_engine_total
 
 
-print(c_drag_engine())
+print(take_off_yaw())
