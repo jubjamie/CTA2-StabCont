@@ -226,8 +226,8 @@ def plotit(r1, r2):
     plt.plot([h0, h0], [ref_tail, ref_head])
     plt.annotate("Wing h0 Position", [h0, ref_head])
     # Plot MTOW CoG position (approx)
-    plt.plot([mtow_pos, mtow_pos], [ref_tail, ref_head+0.05])
-    plt.annotate("MTOW C.o.G", [mtow_pos, ref_head+0.05])
+    plt.plot([mtow_pos, mtow_pos], [ref_tail, ref_head+(ref_head-ref_tail)])
+    plt.annotate("MTOW C.o.G", [mtow_pos, ref_head+(ref_head-ref_tail)])
     # Plot Wing LE/TE position (approx)
     wingLE = (params['WingCentrePoint']-(params['Cr']/2))/c_bar
     wingTE = (params['WingCentrePoint'] + (params['Cr'] / 2)) / c_bar
