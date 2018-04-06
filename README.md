@@ -12,5 +12,5 @@ These will be sized according to a number of different methods and scenarios. Fo
 ### Scissor Plot
 Current Scissor Plot from <a href="scissorplot.py">scissorplot.py</a>.
 <p align="center">
-<img src="plot.png?raw=true" />
+<img src="tailplot.png?raw=true" />
 </p>

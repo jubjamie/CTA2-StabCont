@@ -253,7 +253,7 @@ def plotit(r1, r2):
     print("SH/S = " + str(format(size[2], '.2f')) + " : Size = " + str(format(size[2]*params['Sarea'], '.2f')) + "m2")
     plt.grid(True)
     plt.legend(loc='upper right', shadow=True)
-    plt.savefig("plot.png")
+    plt.savefig("tailplot.png")
     plt.show()
 
 
