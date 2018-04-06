@@ -26,3 +26,54 @@ while data_available is True:
 
 # Zip into a dictionary
 params = dict(zip(param_name, param_value))
+
+# Utility Functions
+
+
+def q(v):
+    return 0.5 * 1.225 * (v**2)
+
+
+def qS(v):
+    return 0.5 * 1.225 * params['Sarea'] * (v**2)
+
+
+def myceil(x, base):
+    return (base * np.ceil(float(x)/base))
+
+
+def myfloor(x, base):
+    return (base * np.floor(float(x)/base))
+
+# Constants/Values
+dcyWBN_db = -0.43  # per rad
+dcyV_db = -3.726  # per rad
+dcyV_dd = 1.892  # per rad
+c_bar = np.mean([params['Ct'], params['Cr']])
+maxthrust = 44538  # N @ takoff
+vto = 62.1  # m/s
+cthrust = maxthrust / qS(vto)
+dr = np.deg2rad(30)
+Kr = 0.9
+blade_count = 6
+blade_diameter = params['EnginePropDiameter']
+blade_centre = params['EngineWingPosOutboard']
+lvtp = 12
+engine_scale = 0.89
+engine_intake_area = 0.16 * engine_scale
+engine_diameter = np.sqrt(engine_intake_area/np.pi)*2
+print(engine_diameter)
+
+
+def take_off_yaw():
+    pass
+
+
+def c_drag_engine():
+    cd_wind = 0.1 * (engine_diameter**2)
+    cd_prop = 0.00125 * blade_count * blade_diameter**2
+    cd_engine_total = cd_prop + cd_wind
+    return cd_engine_total
+
+
+print(c_drag_engine())
