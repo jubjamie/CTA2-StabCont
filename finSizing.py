@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 from openpyxl import load_workbook
 
@@ -80,4 +81,65 @@ def c_drag_engine():
     return cd_engine_total
 
 
-print(take_off_yaw())
+#print(take_off_yaw())
+
+def plotit(r1, r2):
+    # Create Range of h values
+    step = 0.1
+    r2 = r2 + step
+    x_h = np.arange(r1, r2, 0.1)
+    fig = plt.figure(figsize=(10, 7))
+    ax = fig.add_subplot(1, 1, 1)
+    ax.xaxis.set_ticks_position('bottom')
+    y_tails = []
+    y_heads = []
+    plt.xlabel("h")
+    plt.ylabel("ST/S")
+    plt.plot([r1, r2], [take_off_yaw(), take_off_yaw()], label='Take Off Yaw')
+    y_tails.append(take_off_yaw())
+    y_heads.append(take_off_yaw())
+
+    """This section constrains the graph correctly"""
+    max_y = myceil(max(y_heads), step)
+    #print(max_y)
+    min_y = myfloor((min(y_tails)), step)
+    #print(min_y)
+    plt.ylim(min_y, max_y)
+    plt.xlim(r1, r2-0.1)
+
+    """Reference Plots
+    This section plots reference points for the current aircraft configuration absed on data from the CAD param file"""
+    ref_tail = min_y
+    ref_head = ((max_y-ref_tail)*0.05) + ref_tail
+
+
+    # Plot h0 position
+    plt.plot([h0, h0], [ref_tail, ref_head])
+    plt.annotate("Wing h0 Position", [h0, ref_head])
+    # Plot MTOW CoG position (approx)
+    plt.plot([mtow_pos, mtow_pos], [ref_tail, ref_head+(ref_head-ref_tail)])
+    plt.annotate("MTOW C.o.G", [mtow_pos, ref_head+(ref_head-ref_tail)])
+    # Plot Wing LE/TE position (approx)
+    wingLE = (params['WingCentrePoint']-(params['Cr']/2))/c_bar
+    wingTE = (params['WingCentrePoint'] + (params['Cr'] / 2)) / c_bar
+    plt.plot([wingLE, wingLE], [ref_tail, ref_head])
+    plt.annotate("Wing LE", [wingLE, ref_head])
+    plt.plot([wingTE, wingTE], [ref_tail, ref_head])
+    plt.annotate("Wing TE", [wingTE, ref_head])
+    #Main Gear Position
+    mainpos = params['MainGearPos']/c_bar
+    plt.plot([mainpos, mainpos], [ref_tail, ref_head])
+    plt.annotate("Main Gear Pos", [mainpos, ref_head])
+
+    """Result Plots
+    This section plots the results of the size finder. There are two options to call. One finds via a delta h range,
+    the other via known fwd and aft positions"""
+    # Known Delta h range
+
+    plt.grid(True)
+    plt.legend(loc='upper right', shadow=True)
+    plt.savefig("finplot.png")
+    plt.show()
+
+
+plotit(5, 7)
