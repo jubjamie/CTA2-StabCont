@@ -46,14 +46,19 @@ def myceil(x, base):
 def myfloor(x, base):
     return (base * np.floor(float(x)/base))
 
+
 # Constants/Values
 dcyWBN_db = -0.43  # per rad
+dcnWBN_db = -0.462  # per rad
 dcyV_db = -3.726  # per rad
 dcyV_dd = 1.892  # per rad
 c_bar = np.mean([params['Ct'], params['Cr']])
 maxthrust = 44459  # N @ takoff
+cruise_thrust = 9919  # N
 vto = 62.4  # m/s
+vc = 65.9
 cthrust = maxthrust / qS(vto)
+cthrust_airborne = cruise_thrust / qS(vc)
 dr = np.deg2rad(30)
 Kr = 0.9
 blade_count = 6
@@ -63,15 +68,9 @@ engine_scale = 0.89
 engine_intake_area = 0.16 * engine_scale
 engine_diameter = np.sqrt(engine_intake_area/np.pi)*2
 h0 = params['WingChordStart']/c_bar
+max_bank_angle = np.deg2rad(5)
+cl_vmca = 0.4
 mtow_pos = (14.436+0.364)/c_bar  # Approx P2B mtow pos from GA
-print(engine_diameter)
-
-
-def take_off_yaw():
-    lvtp = ((params['TailRootRearPlane'] / c_bar) - h0) * c_bar
-    lhs_top = (cthrust + c_drag_engine())*(blade_centre/c_bar)
-    lhs_bottom = (dr * Kr * dcyV_dd * lvtp)/c_bar
-    return lhs_top/lhs_bottom
 
 
 def c_drag_engine():
@@ -81,7 +80,30 @@ def c_drag_engine():
     return cd_engine_total
 
 
-#print(take_off_yaw())
+def take_off_yaw():
+    lvtp = ((params['TailRootRearPlane'] / c_bar) - h0) * c_bar
+    lhs_top = (cthrust + c_drag_engine())*(blade_centre/c_bar)
+    lhs_bottom = (dr * Kr * dcyV_dd * lvtp)/c_bar
+    return lhs_top/lhs_bottom
+
+
+def airborne_combined(h=5.8):
+    lvtp = (params['TailRootRearPlane'] / c_bar) - h0
+    eq_a = dcnWBN_db + (dcyWBN_db * (h-0.25))
+    eq_b = dcyV_dd * Kr * dr
+    eq_c = (cthrust_airborne - c_drag_engine()) * blade_centre/c_bar
+    eq_d = dcyV_db * lvtp
+    eq_e = dcyWBN_db * lvtp * eq_b
+    eq_f = 2 * eq_d * eq_b
+    eq_g = eq_e - (dcyV_db * eq_c) - (eq_d * cl_vmca * max_bank_angle) + (eq_b * eq_a)
+    eq_h = -((eq_c * dcyWBN_db) + (cl_vmca * eq_a * max_bank_angle))
+    eq_quad = [eq_f, eq_g, eq_h]
+    return np.roots(eq_quad)
+
+
+print(airborne_combined(5.8))
+
+
 
 def plotit(r1, r2):
     # Create Range of h values
