@@ -97,10 +97,16 @@ def airborne_combined(h):
         eq_d = dcyV_db * lvtp
         eq_e = lvtp * eq_b
         eq_f = (dcyV_db * eq_e) - (eq_d * eq_b)
+        print("f: " + str(eq_f))
         eq_g = (eq_b * eq_a) + (eq_e * dcyWBN_db) - (eq_c * dcyV_db) - (eq_d * cl_vmca * max_bank_angle)
+        print("g: " + str(eq_g))
         eq_h = (cl_vmca * eq_a * max_bank_angle)-(eq_c * dcyWBN_db)
-        eq_quad = [eq_f, eq_g, eq_h]
-        result.append(max(np.roots(eq_quad)))
+        print("h: " + str(eq_h))
+        eq_quad = np.poly1d([eq_f, eq_g, eq_h])
+        roots = eq_quad.r
+        print(roots)
+        print(eq_quad.c)
+        result.append(max(roots))
     return result
 
 
