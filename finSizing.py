@@ -3,7 +3,7 @@ import numpy as np
 from openpyxl import load_workbook
 
 # Excel Sheet Loading
-cad_file_path = '../../../../2. TechInt/Project Space/CAD/CADParametersNewAero.xlsx'
+cad_file_path = "B:\OneDrive\Group Business Design Project/2. TechInt\Project Space\CAD\CADParametersNewAero.xlsx"
 cad_file = load_workbook(filename=cad_file_path, data_only=True)
 cad_params = cad_file['Sheet1']  # Load into Sheet1
 
@@ -51,7 +51,7 @@ def myfloor(x, base):
 dcyWBN_db = -0.43  # per rad
 dcnWBN_db = -0.462  # per rad
 dcyV_db = -3.726  # per rad
-dcyV_dd = 1.892  # per rad
+dcyV_dr = 1.892  # per rad
 c_bar = np.mean([params['Ct'], params['Cr']])
 maxthrust = 44459  # N @ takoff
 cruise_thrust = 9919  # N
@@ -67,9 +67,9 @@ blade_centre = params['EngineWingPosOutboard']
 engine_scale = 0.89
 engine_intake_area = 0.16 * engine_scale
 engine_diameter = np.sqrt(engine_intake_area/np.pi)*2
-h0 = params['WingChordStart']/c_bar
+h0 = params['WingChordStart']/c_bar + 0.2
 max_bank_angle = np.deg2rad(5)
-cl_vmca = 0.4
+cl_vmca = 2.549
 mtow_pos = (14.436+0.364)/c_bar  # Approx P2B mtow pos from GA
 
 
@@ -83,25 +83,31 @@ def c_drag_engine():
 def take_off_yaw():
     lvtp = ((params['TailRootRearPlane'] / c_bar) - h0) * c_bar
     lhs_top = (cthrust + c_drag_engine())*(blade_centre/c_bar)
-    lhs_bottom = (dr * Kr * dcyV_dd * lvtp)/c_bar
+    lhs_bottom = (dr * Kr * dcyV_dr * lvtp) / c_bar
     return lhs_top/lhs_bottom
 
 
 def airborne_combined(h):
 
-    lvtp = (params['TailRootRearPlane'] / c_bar) - h0
-    eq_a = dcnWBN_db + (dcyWBN_db * (h0-h))
-    eq_b = dcyV_dd * Kr * dr
-    eq_c = (cthrust_airborne + c_drag_engine()) * blade_centre/c_bar
-    eq_d = dcyV_db * lvtp
-    eq_e = lvtp * eq_b
+    lvtp = (((params['FinTrailPointRoot']-(0.5*params['Fincr'])) / c_bar) - h0) * c_bar
+    print(lvtp)
+    eq_a = dcnWBN_db + (dcyWBN_db * (h0-h))  # Joe D
+    print("a: " + str(eq_a))
+    eq_b = dcyV_dr * Kr * dr  # Joe C
+    print("b: " + str(eq_b))
+    eq_c = (cthrust + c_drag_engine()) * blade_centre/c_bar  # Joe B
+    print("c: " + str(eq_c))
+    eq_d = dcyV_db * (lvtp/c_bar)  # Joe E
+    print("d: " + str(eq_d))
+    eq_e = (lvtp/c_bar) * eq_b  # Joe a
+    print("e: " + str(eq_e))
     eq_f = (dcyV_db * eq_e) - (eq_d * eq_b)
     print("f: " + str(eq_f))
-    eq_g = (eq_b * eq_a) + (eq_e * dcyWBN_db) - (eq_c * dcyV_db) - (eq_d * cl_vmca * max_bank_angle)
+    eq_g = (eq_c * dcyV_db)-(eq_b * eq_a) - (eq_e * dcyWBN_db) + (eq_d * cl_vmca * max_bank_angle)
     print("g: " + str(eq_g))
-    eq_h = (cl_vmca * eq_a * max_bank_angle)-(eq_c * dcyWBN_db)
+    eq_h = (eq_c * dcyWBN_db)-(cl_vmca * eq_a * max_bank_angle)
     print("h: " + str(eq_h))
-    return -1 * (eq_h/eq_g)
+    return (eq_h/eq_g)
 
 
 
@@ -168,4 +174,4 @@ def plotit(r1, r2):
     plt.show()
 
 
-plotit(5, 7)
+plotit(5.5, 6)
