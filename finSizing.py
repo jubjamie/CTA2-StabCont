@@ -88,26 +88,21 @@ def take_off_yaw():
 
 
 def airborne_combined(h):
-    result = []
-    for h in h:
-        lvtp = (params['TailRootRearPlane'] / c_bar) - h0
-        eq_a = dcnWBN_db + (dcyWBN_db * (h0-h))
-        eq_b = dcyV_dd * Kr * dr
-        eq_c = (cthrust_airborne + c_drag_engine()) * blade_centre/c_bar
-        eq_d = dcyV_db * lvtp
-        eq_e = lvtp * eq_b
-        eq_f = (dcyV_db * eq_e) - (eq_d * eq_b)
-        print("f: " + str(eq_f))
-        eq_g = (eq_b * eq_a) + (eq_e * dcyWBN_db) - (eq_c * dcyV_db) - (eq_d * cl_vmca * max_bank_angle)
-        print("g: " + str(eq_g))
-        eq_h = (cl_vmca * eq_a * max_bank_angle)-(eq_c * dcyWBN_db)
-        print("h: " + str(eq_h))
-        eq_quad = np.poly1d([eq_f, eq_g, eq_h])
-        roots = eq_quad.r
-        print(roots)
-        print(eq_quad.c)
-        result.append(max(roots))
-    return result
+
+    lvtp = (params['TailRootRearPlane'] / c_bar) - h0
+    eq_a = dcnWBN_db + (dcyWBN_db * (h0-h))
+    eq_b = dcyV_dd * Kr * dr
+    eq_c = (cthrust_airborne + c_drag_engine()) * blade_centre/c_bar
+    eq_d = dcyV_db * lvtp
+    eq_e = lvtp * eq_b
+    eq_f = (dcyV_db * eq_e) - (eq_d * eq_b)
+    print("f: " + str(eq_f))
+    eq_g = (eq_b * eq_a) + (eq_e * dcyWBN_db) - (eq_c * dcyV_db) - (eq_d * cl_vmca * max_bank_angle)
+    print("g: " + str(eq_g))
+    eq_h = (cl_vmca * eq_a * max_bank_angle)-(eq_c * dcyWBN_db)
+    print("h: " + str(eq_h))
+    return -1 * (eq_h/eq_g)
+
 
 
 def plotit(r1, r2):
