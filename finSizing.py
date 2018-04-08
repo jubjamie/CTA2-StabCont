@@ -120,7 +120,7 @@ def plotit(r1, r2):
     y_tails.append(take_off_yaw())
     y_heads.append(take_off_yaw())
 
-    plt.plot(x_h, airborne_combined(x_h), label='Take Off Yaw')
+    plt.plot(x_h, airborne_combined(x_h), label='Airborne Case')
     y_tails.append(min(airborne_combined(x_h)))
     y_heads.append(max(airborne_combined(x_h)))
 
