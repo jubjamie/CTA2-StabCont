@@ -87,22 +87,21 @@ def take_off_yaw():
     return lhs_top/lhs_bottom
 
 
-def airborne_combined(h=5.8):
-    lvtp = (params['TailRootRearPlane'] / c_bar) - h0
-    eq_a = dcnWBN_db + (dcyWBN_db * (h-0.25))
-    eq_b = dcyV_dd * Kr * dr
-    eq_c = (cthrust_airborne - c_drag_engine()) * blade_centre/c_bar
-    eq_d = dcyV_db * lvtp
-    eq_e = dcyWBN_db * lvtp * eq_b
-    eq_f = 2 * eq_d * eq_b
-    eq_g = eq_e - (dcyV_db * eq_c) - (eq_d * cl_vmca * max_bank_angle) + (eq_b * eq_a)
-    eq_h = -((eq_c * dcyWBN_db) + (cl_vmca * eq_a * max_bank_angle))
-    eq_quad = [eq_f, eq_g, eq_h]
-    return np.roots(eq_quad)
-
-
-print(airborne_combined(5.8))
-
+def airborne_combined(h):
+    result = []
+    for h in h:
+        lvtp = (params['TailRootRearPlane'] / c_bar) - h0
+        eq_a = dcnWBN_db + (dcyWBN_db * (h0-h))
+        eq_b = dcyV_dd * Kr * dr
+        eq_c = (cthrust_airborne + c_drag_engine()) * blade_centre/c_bar
+        eq_d = dcyV_db * lvtp
+        eq_e = lvtp * eq_b
+        eq_f = (dcyV_db * eq_e) - (eq_d * eq_b)
+        eq_g = (eq_b * eq_a) + (eq_e * dcyWBN_db) - (eq_c * dcyV_db) - (eq_d * cl_vmca * max_bank_angle)
+        eq_h = (cl_vmca * eq_a * max_bank_angle)-(eq_c * dcyWBN_db)
+        eq_quad = [eq_f, eq_g, eq_h]
+        result.append(max(np.roots(eq_quad)))
+    return result
 
 
 def plotit(r1, r2):
@@ -120,6 +119,10 @@ def plotit(r1, r2):
     plt.plot([r1, r2], [take_off_yaw(), take_off_yaw()], label='Take Off Yaw')
     y_tails.append(take_off_yaw())
     y_heads.append(take_off_yaw())
+
+    plt.plot(x_h, airborne_combined(x_h), label='Take Off Yaw')
+    y_tails.append(min(airborne_combined(x_h)))
+    y_heads.append(max(airborne_combined(x_h)))
 
     """This section constrains the graph correctly"""
     max_y = myceil(max(y_heads), step)
