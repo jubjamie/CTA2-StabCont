@@ -131,6 +131,13 @@ def crosswind_landing(h):
     lhs_bottom = (dcyV_dr * Kr_cw * dr_cw * lvtp/c_bar) + (beta * dcyV_db * lvtp/c_bar)
     return lhs_top/lhs_bottom
 
+def directional_stability(h):
+    lvtp = (((params['FinTrailPointRoot'] - (0.5 * params['Fincr'])) / c_bar) - h0) * c_bar
+    cnb = 1.25
+    lhs_top = cnb + (dcyWBN_db * h0-h) - dcnWBN_db
+    lhs_bottom = -dcyV_db * ((lvtp/c_bar) - (h0-h))
+    return lhs_top/lhs_bottom
+
 
 def plotit(r1, r2):
     # Create Range of h values
@@ -156,9 +163,10 @@ def plotit(r1, r2):
     y_tails.append(min(crosswind_landing(x_h)))
     y_heads.append(max(crosswind_landing(x_h)))
 
-    plt.plot([r1, r2], [oei_sideforce(), oei_sideforce()], label='OEI Side Force')
-    y_tails.append(oei_sideforce())
-    y_heads.append(oei_sideforce())
+    plt.plot(x_h, directional_stability(x_h), label='Directional Stability')
+    y_tails.append(min(directional_stability(x_h)))
+    y_heads.append(max(directional_stability(x_h)))
+
 
     """This section constrains the graph correctly"""
     max_y = myceil(max(y_heads), step)
