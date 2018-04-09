@@ -53,7 +53,7 @@ def myfloor(x, base):
 dcyWBN_db = -0.43  # per rad
 dcnWBN_db = -0.462  # per rad
 dcyV_db = -3.726  # per rad
-dcyV_dd = 1.892  # per rad
+dcyV_dr = 1.892  # per rad
 c_bar = np.mean([params['Ct'], params['Cr']])
 maxthrust = 44459  # N @ takoff
 cruise_thrust = 9919  # N
@@ -71,7 +71,7 @@ engine_intake_area = 0.16 * engine_scale
 engine_diameter = np.sqrt(engine_intake_area/np.pi)*2
 h0 = params['WingChordStart']/c_bar
 max_bank_angle = np.deg2rad(5)
-cl_vmca = 0.4
+cl_vmca = 2.549
 mtow_pos = (14.436+0.364)/c_bar  # Approx P2B mtow pos from GA
 
 
@@ -85,25 +85,51 @@ def c_drag_engine():
 def take_off_yaw():
     lvtp = ((params['TailRootRearPlane'] / c_bar) - h0) * c_bar
     lhs_top = (cthrust + c_drag_engine())*(blade_centre/c_bar)
-    lhs_bottom = (dr * Kr * dcyV_dd * lvtp)/c_bar
+    lhs_bottom = (dr * Kr * dcyV_dr * lvtp) / c_bar
     return lhs_top/lhs_bottom
 
 
 def airborne_combined(h):
-    result = []
-    for h in h:
-        lvtp = (params['TailRootRearPlane'] / c_bar) - h0
-        eq_a = dcnWBN_db + (dcyWBN_db * (h0-h))
-        eq_b = dcyV_dd * Kr * dr
-        eq_c = (cthrust_airborne + c_drag_engine()) * blade_centre/c_bar
-        eq_d = dcyV_db * lvtp
-        eq_e = lvtp * eq_b
-        eq_f = (dcyV_db * eq_e) - (eq_d * eq_b)
-        eq_g = (eq_b * eq_a) + (eq_e * dcyWBN_db) - (eq_c * dcyV_db) - (eq_d * cl_vmca * max_bank_angle)
-        eq_h = (cl_vmca * eq_a * max_bank_angle)-(eq_c * dcyWBN_db)
-        eq_quad = [eq_f, eq_g, eq_h]
-        result.append(max(np.roots(eq_quad)))
-    return result
+
+    lvtp = (((params['FinTrailPointRoot']-(0.5*params['Fincr'])) / c_bar) - h0) * c_bar
+    print(lvtp)
+    eq_a = dcnWBN_db + (dcyWBN_db * (h0-h))  # Joe D
+    print("a: " + str(eq_a))
+    eq_b = dcyV_dr * Kr * dr  # Joe C
+    print("b: " + str(eq_b))
+    eq_c = (cthrust + c_drag_engine()) * blade_centre/c_bar  # Joe B
+    print("c: " + str(eq_c))
+    eq_d = dcyV_db * (lvtp/c_bar)  # Joe E
+    print("d: " + str(eq_d))
+    eq_e = (lvtp/c_bar) * eq_b  # Joe a
+    print("e: " + str(eq_e))
+    eq_f = (dcyV_db * eq_e) - (eq_d * eq_b)
+    print("f: " + str(eq_f))
+    eq_g = (eq_c * dcyV_db)-(eq_b * eq_a) - (eq_e * dcyWBN_db) + (eq_d * cl_vmca * max_bank_angle)
+    print("g: " + str(eq_g))
+    eq_h = (eq_c * dcyWBN_db)-(cl_vmca * eq_a * max_bank_angle)
+    print("h: " + str(eq_h))
+    return (eq_h/eq_g)
+
+
+def oei_sideforce():
+    beta = np.deg2rad(5)
+    lhs_top = -(dcyWBN_db*beta) - (cl_vmca * max_bank_angle)
+    lhs_bottom = (dcyV_db * beta) + (dcyV_dr * Kr * dr)
+    return lhs_top/lhs_bottom
+
+
+def crosswind_landing(h):
+    vcw = 25*0.515
+    vapp = 125*0.515
+    beta = np.arctan(vcw/vapp)
+    dr_cw = dr * 0.7
+    Kr_cw = 0.98
+    lvtp = (((params['FinTrailPointRoot'] - (0.5 * params['Fincr'])) / c_bar) - h0) * c_bar
+
+    lhs_top = beta * (dcnWBN_db + (dcyWBN_db * (h0-h)))
+    lhs_bottom = (dcyV_dr * Kr_cw * dr_cw * lvtp/c_bar) + (beta * dcyV_db * lvtp/c_bar)
+    return lhs_top/lhs_bottom
 
 
 def plotit(r1, r2):
@@ -122,9 +148,17 @@ def plotit(r1, r2):
     y_tails.append(take_off_yaw())
     y_heads.append(take_off_yaw())
 
-    plt.plot(x_h, airborne_combined(x_h), label='Take Off Yaw')
+    plt.plot(x_h, airborne_combined(x_h), label='Airborne Case')
     y_tails.append(min(airborne_combined(x_h)))
     y_heads.append(max(airborne_combined(x_h)))
+
+    plt.plot(x_h, crosswind_landing(x_h), label='Crosswind Landing')
+    y_tails.append(min(crosswind_landing(x_h)))
+    y_heads.append(max(crosswind_landing(x_h)))
+
+    plt.plot([r1, r2], [oei_sideforce(), oei_sideforce()], label='OEI Side Force')
+    y_tails.append(oei_sideforce())
+    y_heads.append(oei_sideforce())
 
     """This section constrains the graph correctly"""
     max_y = myceil(max(y_heads), step)
@@ -169,4 +203,4 @@ def plotit(r1, r2):
     plt.show()
 
 
-plotit(5, 7)
+plotit(5.5, 6)
