@@ -1,9 +1,11 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from openpyxl import load_workbook
+import filepath1
 
 # Excel Sheet Loading
-cad_file_path = '../../../../2. TechInt/Project Space/CAD/CADParametersNewAero.xlsx'
+cad_file_path = filepath1.cad_file_path
+# cad_file_path = '../../../../2. TechInt/Project Space/CAD/CADParametersNewAero.xlsx'
 cad_file = load_workbook(filename=cad_file_path, data_only=True)
 cad_params = cad_file['Sheet1']  # Load into Sheet1
 
