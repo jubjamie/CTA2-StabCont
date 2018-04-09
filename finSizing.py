@@ -112,6 +112,25 @@ def airborne_combined(h):
     return (eq_h/eq_g)
 
 
+def oei_sideforce():
+    beta = np.deg2rad(5)
+    lhs_top = -(dcyWBN_db*beta) - (cl_vmca * max_bank_angle)
+    lhs_bottom = (dcyV_db * beta) + (dcyV_dr * Kr * dr)
+    return lhs_top/lhs_bottom
+
+
+def crosswind_landing(h):
+    vcw = 25*0.515
+    vapp = 125*0.515
+    beta = np.arctan(vcw/vapp)
+    dr_cw = dr * 0.7
+    Kr_cw = 0.98
+    lvtp = (((params['FinTrailPointRoot'] - (0.5 * params['Fincr'])) / c_bar) - h0) * c_bar
+
+    lhs_top = beta * (dcnWBN_db + (dcyWBN_db * (h0-h)))
+    lhs_bottom = (dcyV_dr * Kr_cw * dr_cw * lvtp/c_bar) + (beta * dcyV_db * lvtp/c_bar)
+    return lhs_top/lhs_bottom
+
 
 def plotit(r1, r2):
     # Create Range of h values
@@ -132,6 +151,14 @@ def plotit(r1, r2):
     plt.plot(x_h, airborne_combined(x_h), label='Airborne Case')
     y_tails.append(min(airborne_combined(x_h)))
     y_heads.append(max(airborne_combined(x_h)))
+
+    plt.plot(x_h, crosswind_landing(x_h), label='Crosswind Landing')
+    y_tails.append(min(crosswind_landing(x_h)))
+    y_heads.append(max(crosswind_landing(x_h)))
+
+    plt.plot([r1, r2], [oei_sideforce(), oei_sideforce()], label='OEI Side Force')
+    y_tails.append(oei_sideforce())
+    y_heads.append(oei_sideforce())
 
     """This section constrains the graph correctly"""
     max_y = myceil(max(y_heads), step)
