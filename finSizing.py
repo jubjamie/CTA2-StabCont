@@ -70,6 +70,7 @@ engine_scale = 0.89
 engine_intake_area = 0.16 * engine_scale
 engine_diameter = np.sqrt(engine_intake_area/np.pi)*2
 h0 = params['WingChordStart']/c_bar
+print(h0)
 max_bank_angle = np.deg2rad(5)
 cl_vmca = 2.549
 mtow_pos = (14.436+0.364)/c_bar  # Approx P2B mtow pos from GA
@@ -134,7 +135,7 @@ def crosswind_landing(h):
 def directional_stability(h):
     lvtp = (((params['FinTrailPointRoot'] - (0.5 * params['Fincr'])) / c_bar) - h0) * c_bar
     cnb = 1.25
-    lhs_top = cnb + (dcyWBN_db * h0-h) - dcnWBN_db
+    lhs_top = cnb + (dcyWBN_db * (h0-h)) - dcnWBN_db
     lhs_bottom = -dcyV_db * ((lvtp/c_bar) - (h0-h))
     return lhs_top/lhs_bottom
 
