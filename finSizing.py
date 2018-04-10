@@ -80,7 +80,7 @@ def c_drag_engine():
     cd_wind = 0.1 * (engine_diameter**2)
     cd_prop = 0.00125 * blade_count * blade_diameter**2
     cd_engine_total = cd_prop + cd_wind
-    return cd_engine_total
+    return 0.02
 
 
 def take_off_yaw():
