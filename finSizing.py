@@ -69,7 +69,7 @@ blade_centre = params['EngineWingPosOutboard']
 engine_scale = 0.89
 engine_intake_area = 0.16 * engine_scale
 engine_diameter = np.sqrt(engine_intake_area/np.pi)*2
-h0 = params['WingChordStart']/c_bar
+h0 = cad_file['Interface']['B54'].value
 print(h0)
 max_bank_angle = np.deg2rad(5)
 cl_vmca = 2.549
