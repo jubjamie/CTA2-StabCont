@@ -57,11 +57,11 @@ maxthrust = 44459 * 2  # N @ takoff
 vto = 62.4  # m/s
 cthrust = maxthrust / qS(vto)
 cm0 = -0.0663
-cl_to = 2.549
+cl_to = 2.678
 clt = -1  # Tail CL
 mtow = 35590  # kg
 g = 9.81  # m/s/s
-h0 = params['WingChordStart']/c_bar
+h0 = cad_file['Interface']['B54'].value
 print("h0 = " + str(h0))
 mtow_pos = (14.436+0.364)/c_bar  # Approx P2B mtow pos from GA
 
@@ -184,6 +184,12 @@ def size_finder_range(x_h, left_y, right_y, static_y, hf, ha):
     return output
 
 
+def h_finder_from_mac(mac_pos):
+    result = h0-0.25+mac_pos
+    print(result)
+    return result
+
+
 def plotit(r1, r2):
     # Create Range of h values
     step = 0.1
@@ -247,7 +253,7 @@ def plotit(r1, r2):
     the other via known fwd and aft positions"""
     # Known Delta h range
     #size = size_finder_delta(x_h, takeOffRotation(x_h), [kn(x_h)], [noseWheel()], 0.4)
-    size = size_finder_range(x_h, takeOffRotation(x_h), [kn(x_h)], [noseWheel()], 5.46, 6.2)
+    size = size_finder_range(x_h, takeOffRotation(x_h), [kn(x_h)], [noseWheel()], h_finder_from_mac(0.15), h_finder_from_mac(0.43))
     plt.plot([size[0], size[1]], [size[2], size[2]])
     plt.annotate("SH/S = " + str(format(size[2], '.2f')) + " : Size = " + str(format(size[2]*params['Sarea'], '.2f')) + "m2", [size[0], size[2]+0.05])
     plt.annotate("h Range: " + str(format(size[0], '.2f')) + " <> " + str(format(size[1], '.2f')), [size[0], size[2]+0.1])
