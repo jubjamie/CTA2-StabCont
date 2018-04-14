@@ -64,6 +64,7 @@ g = 9.81  # m/s/s
 h0 = cad_file['Interface']['B54'].value
 print("h0 = " + str(h0))
 mtow_pos = (14.436+0.364)/c_bar  # Approx P2B mtow pos from GA
+lvtp_cad_value = cad_params["M162"].value
 
 
 def noseWheel():
@@ -87,7 +88,7 @@ def takeOffRotation(h):
     # print("gear pos - h = " + str(main_gear_moment_distance))
     weight_nondim = g*mtow/qS(vto)  # The weight/qS
     # print("W/qs = " + str(weight_nondim))
-    tail_moment_arm = (params['TailRootRearPlane']/c_bar) - h  # The tail moment to h
+    tail_moment_arm = (lvtp_cad_value/c_bar) - h  # The tail moment to h
     # print("Tail moment arm distance = " + str(tail_moment_arm))
 
     lhs_top = cm0 + cl_moment - ct_moment - (main_gear_moment_distance * (weight_nondim - cl_to))
@@ -101,7 +102,7 @@ def takeOffRotation(h):
 
 
 def landing(h):
-    tail_moment_arm = (params['TailRootRearPlane'] / c_bar) - h0
+    tail_moment_arm = (lvtp_cad_value / c_bar) - h0
     lhs_top = cm0 - (cl_to*(h0-h))
     lhs_bottom = clt * tail_moment_arm
     return lhs_top/lhs_bottom
@@ -109,7 +110,7 @@ def landing(h):
 
 def kn(h):
     kn_limit = 0.05
-    tail_moment_arm = (params['TailRootRearPlane'] / c_bar) - h0  # The tail moment to h
+    tail_moment_arm = (lvtp_cad_value / c_bar) - h0  # The tail moment to h
     a1 = 5.98  # From Horace
     a = 5.14  # From Horace
     d_e_alpha = 0.2

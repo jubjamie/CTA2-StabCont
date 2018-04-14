@@ -74,6 +74,8 @@ print(h0)
 max_bank_angle = np.deg2rad(5)
 cl_vmca = 2.549
 mtow_pos = (14.436+0.364)/c_bar  # Approx P2B mtow pos from GA
+lvtp_cad_value = cad_params["M162"].value
+fin_pos_cad_value = cad_params["M135"].value
 
 
 def c_drag_engine():
@@ -84,7 +86,7 @@ def c_drag_engine():
 
 
 def take_off_yaw():
-    lvtp = ((params['TailRootRearPlane'] / c_bar) - h0) * c_bar
+    lvtp = ((fin_pos_cad_value / c_bar) - h0) * c_bar
     lhs_top = (cthrust + c_drag_engine())*(blade_centre/c_bar)
     lhs_bottom = (dr * Kr * dcyV_dr * lvtp) / c_bar
     return lhs_top/lhs_bottom
@@ -92,7 +94,7 @@ def take_off_yaw():
 
 def airborne_combined(h):
 
-    lvtp = (((params['FinTrailPointRoot']-(0.5*params['Fincr'])) / c_bar) - h0) * c_bar
+    lvtp = ((fin_pos_cad_value / c_bar) - h0) * c_bar
     print(lvtp)
     eq_a = dcnWBN_db + (dcyWBN_db * (h0-h))  # Joe D
     print("a: " + str(eq_a))
@@ -126,14 +128,14 @@ def crosswind_landing(h):
     beta = np.arctan(vcw/vapp)
     dr_cw = dr * 0.7
     Kr_cw = 0.98
-    lvtp = (((params['FinTrailPointRoot'] - (0.5 * params['Fincr'])) / c_bar) - h0) * c_bar
+    lvtp = ((fin_pos_cad_value / c_bar) - h0) * c_bar
 
     lhs_top = beta * (dcnWBN_db + (dcyWBN_db * (h0-h)))
     lhs_bottom = (dcyV_dr * Kr_cw * dr_cw * lvtp/c_bar) + (beta * dcyV_db * lvtp/c_bar)
     return lhs_top/lhs_bottom
 
 def directional_stability(h):
-    lvtp = (((params['FinTrailPointRoot'] - (0.5 * params['Fincr'])) / c_bar) - h0) * c_bar
+    lvtp = ((fin_pos_cad_value / c_bar) - h0) * c_bar
     cnb = 1.25
     lhs_top = cnb + (dcyWBN_db * (h0-h)) - dcnWBN_db
     lhs_bottom = -dcyV_db * ((lvtp/c_bar) - (h0-h))
