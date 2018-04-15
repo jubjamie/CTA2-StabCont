@@ -52,7 +52,7 @@ def myfloor(x, base):
 
 
 # Key Aircraft Params
-c_bar = np.mean([params['Ct'], params['Cr']])
+c_bar = cad_file['Interface']['B53'].value
 maxthrust = 44459 * 2  # N @ takoff
 vto = 62.4  # m/s
 cthrust = maxthrust / qS(vto)
@@ -63,7 +63,8 @@ mtow = 35590  # kg
 g = 9.81  # m/s/s
 h0 = cad_file['Interface']['B54'].value
 print("h0 = " + str(h0))
-mtow_pos = (14.436+0.364)/c_bar  # Approx P2B mtow pos from GA
+mtow_pos_m = cad_file['Interface']['F16'].value
+mtow_pos = mtow_pos_m/c_bar  # From Mass CG File
 lvtp_cad_value = cad_params["M162"].value
 engine_vcg_dist = cad_file['Interface']['F15'].value
 
@@ -255,7 +256,7 @@ def plotit(r1, r2):
     the other via known fwd and aft positions"""
     # Known Delta h range
     #size = size_finder_delta(x_h, takeOffRotation(x_h), [kn(x_h)], [noseWheel()], 0.4)
-    size = size_finder_range(x_h, takeOffRotation(x_h), [kn(x_h)], [noseWheel()], h_finder_from_mac(0.15), h_finder_from_mac(0.43))
+    size = size_finder_range(x_h, takeOffRotation(x_h), [kn(x_h)], [noseWheel()], h_finder_from_mac(0.19), h_finder_from_mac(0.47))
     plt.plot([size[0], size[1]], [size[2], size[2]])
     plt.annotate("SH/S = " + str(format(size[2], '.2f')) + " : Size = " + str(format(size[2]*params['Sarea'], '.2f')) + "m2", [size[0], size[2]+0.05])
     plt.annotate("h Range: " + str(format(size[0], '.2f')) + " <> " + str(format(size[1], '.2f')), [size[0], size[2]+0.1])
