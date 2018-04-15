@@ -256,7 +256,7 @@ def plotit(r1, r2):
     the other via known fwd and aft positions"""
     # Known Delta h range
     #size = size_finder_delta(x_h, takeOffRotation(x_h), [kn(x_h)], [noseWheel()], 0.4)
-    size = size_finder_range(x_h, takeOffRotation(x_h), [kn(x_h)], [noseWheel()], h_finder_from_mac(0.13), h_finder_from_mac(0.43))
+    size = size_finder_range(x_h, takeOffRotation(x_h), [kn(x_h)], [noseWheel()], h_finder_from_mac(0.19), h_finder_from_mac(0.49))
     plt.plot([size[0], size[1]], [size[2], size[2]])
     plt.annotate("SH/S = " + str(format(size[2], '.2f')) + " : Size = " + str(format(size[2]*params['Sarea'], '.2f')) + "m2", [size[0], size[2]+0.05])
     plt.annotate("h Range: " + str(format(size[0], '.2f')) + " <> " + str(format(size[1], '.2f')), [size[0], size[2]+0.1])
