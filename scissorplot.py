@@ -65,6 +65,7 @@ h0 = cad_file['Interface']['B54'].value
 print("h0 = " + str(h0))
 mtow_pos = (14.436+0.364)/c_bar  # Approx P2B mtow pos from GA
 lvtp_cad_value = cad_params["M162"].value
+engine_vcg_dist = cad_file['Interface']['F15'].value
 
 
 def noseWheel():
@@ -82,7 +83,7 @@ def mainGearReaction():
 def takeOffRotation(h):
     cl_moment = cl_to * (h0-h)  # CL * distance between h and h0 (Centre of Lift)
     # print("cl moment = " + str(cl_moment))
-    ct_moment = cthrust * 0.5/c_bar  # Thrust Coeef * vertical distance to CoG (i.e. h)
+    ct_moment = cthrust * engine_vcg_dist/c_bar  # Thrust Coeef * vertical distance to CoG (i.e. h)
     # print("ct moment = " + str(cthrust))
     main_gear_moment_distance = (params['MainGearPos']/c_bar) - h  # Distance of main gear to h
     # print("gear pos - h = " + str(main_gear_moment_distance))
