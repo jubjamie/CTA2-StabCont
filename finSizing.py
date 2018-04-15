@@ -54,7 +54,8 @@ dcyWBN_db = -0.43  # per rad
 dcnWBN_db = -0.462  # per rad
 dcyV_db = -3.726  # per rad
 dcyV_dr = 1.892  # per rad
-c_bar = np.mean([params['Ct'], params['Cr']])
+c_bar = cad_file['Interface']['B53'].value
+print(c_bar)
 maxthrust = 44459  # N @ takoff
 cruise_thrust = 9919  # N
 vto = 62.4  # m/s
@@ -70,10 +71,11 @@ engine_scale = 0.89
 engine_intake_area = 0.16 * engine_scale
 engine_diameter = np.sqrt(engine_intake_area/np.pi)*2
 h0 = cad_file['Interface']['B54'].value
+h0_centre = params["WingChordStart"]/c_bar
 print(h0)
 max_bank_angle = np.deg2rad(5)
 cl_vmca = 2.549
-mtow_pos = (14.436+0.364)/c_bar  # Approx P2B mtow pos from GA
+mtow_pos = cad_file['Interface']['F16'].value/c_bar  # From Mass CG File
 lvtp_cad_value = cad_params["M162"].value
 fin_pos_cad_value = cad_params["M135"].value
 
@@ -86,7 +88,7 @@ def c_drag_engine():
 
 
 def take_off_yaw():
-    lvtp = ((fin_pos_cad_value / c_bar) - h0) * c_bar
+    lvtp = ((fin_pos_cad_value / c_bar) - h0_centre) * c_bar
     lhs_top = (cthrust + c_drag_engine())*(blade_centre/c_bar)
     lhs_bottom = (dr * Kr * dcyV_dr * lvtp) / c_bar
     return lhs_top/lhs_bottom
@@ -94,9 +96,9 @@ def take_off_yaw():
 
 def airborne_combined(h):
 
-    lvtp = ((fin_pos_cad_value / c_bar) - h0) * c_bar
+    lvtp = ((fin_pos_cad_value / c_bar) - h0_centre) * c_bar
     print(lvtp)
-    eq_a = dcnWBN_db + (dcyWBN_db * (h0-h))  # Joe D
+    eq_a = dcnWBN_db + (dcyWBN_db * (h0_centre-h))  # Joe D
     print("a: " + str(eq_a))
     eq_b = dcyV_dr * Kr * dr  # Joe C
     print("b: " + str(eq_b))
@@ -128,17 +130,17 @@ def crosswind_landing(h):
     beta = np.arctan(vcw/vapp)
     dr_cw = dr * 0.7
     Kr_cw = 0.98
-    lvtp = ((fin_pos_cad_value / c_bar) - h0) * c_bar
+    lvtp = ((fin_pos_cad_value / c_bar) - h0_centre) * c_bar
 
-    lhs_top = beta * (dcnWBN_db + (dcyWBN_db * (h0-h)))
+    lhs_top = beta * (dcnWBN_db + (dcyWBN_db * (h0_centre-h)))
     lhs_bottom = (dcyV_dr * Kr_cw * dr_cw * lvtp/c_bar) + (beta * dcyV_db * lvtp/c_bar)
     return lhs_top/lhs_bottom
 
 def directional_stability(h):
-    lvtp = ((fin_pos_cad_value / c_bar) - h0) * c_bar
+    lvtp = ((fin_pos_cad_value / c_bar) - h0_centre) * c_bar
     cnb = 1.25
-    lhs_top = cnb + (dcyWBN_db * (h0-h)) - dcnWBN_db
-    lhs_bottom = -dcyV_db * ((lvtp/c_bar) - (h0-h))
+    lhs_top = cnb + (dcyWBN_db * (h0_centre-h)) - dcnWBN_db
+    lhs_bottom = -dcyV_db * ((lvtp/c_bar) - (h0_centre-h))
     return lhs_top/lhs_bottom
 
 
@@ -214,4 +216,4 @@ def plotit(r1, r2):
     plt.show()
 
 
-plotit(5.5, 6)
+plotit(5.1, 5.8)
