@@ -149,7 +149,7 @@ def plotit(r1, r2):
     step = 0.1
     r2 = r2 + step
     x_h = np.arange(r1, r2, 0.1)
-    fig = plt.figure(figsize=(10, 7))
+    fig = plt.figure(figsize=(12, 8))
     ax = fig.add_subplot(1, 1, 1)
     ax.xaxis.set_ticks_position('bottom')
     y_tails = []
