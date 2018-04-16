@@ -58,7 +58,7 @@ vto = 62.4  # m/s
 cthrust = maxthrust / qS(vto)
 cm0 = -0.0663
 cl_to = 2.678
-clt = -1  # Tail CL
+clt = -0.9  # Tail CL
 mtow = 35590  # kg
 g = 9.81  # m/s/s
 h0 = cad_file['Interface']['B54'].value
@@ -93,7 +93,7 @@ def takeOffRotation(h):
     tail_moment_arm = (lvtp_cad_value/c_bar) - h  # The tail moment to h
     # print("Tail moment arm distance = " + str(tail_moment_arm))
 
-    lhs_top = cm0 + cl_moment + ct_moment - (main_gear_moment_distance * (weight_nondim - cl_to))
+    lhs_top = cm0 + cl_moment - ct_moment - (main_gear_moment_distance * (weight_nondim - cl_to))
     #         Cm0 + cl(h-h0)  - ct(dist)  - reaction distance * the weight minus the cl lift
     # print("top = " + str(lhs_top))
     lhs_bottom = (clt*(main_gear_moment_distance-tail_moment_arm))
