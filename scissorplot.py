@@ -65,7 +65,7 @@ h0 = cad_file['Interface']['B54'].value
 print("h0 = " + str(h0))
 mtow_pos_m = cad_file['Interface']['F16'].value
 mtow_pos = mtow_pos_m/c_bar  # From Mass CG File
-lvtp_cad_value = cad_params["M162"].value
+lvtp_cad_value = cad_file['Interface']["B76"].value
 engine_vcg_dist = cad_file['Interface']['F15'].value
 
 
@@ -93,7 +93,7 @@ def takeOffRotation(h):
     tail_moment_arm = (lvtp_cad_value/c_bar) - h  # The tail moment to h
     # print("Tail moment arm distance = " + str(tail_moment_arm))
 
-    lhs_top = cm0 + cl_moment - ct_moment - (main_gear_moment_distance * (weight_nondim - cl_to))
+    lhs_top = cm0 + cl_moment + ct_moment - (main_gear_moment_distance * (weight_nondim - cl_to))
     #         Cm0 + cl(h-h0)  - ct(dist)  - reaction distance * the weight minus the cl lift
     # print("top = " + str(lhs_top))
     lhs_bottom = (clt*(main_gear_moment_distance-tail_moment_arm))

@@ -76,8 +76,8 @@ print(h0)
 max_bank_angle = np.deg2rad(5)
 cl_vmca = 2.549
 mtow_pos = cad_file['Interface']['F16'].value/c_bar  # From Mass CG File
-lvtp_cad_value = cad_params["M162"].value
-fin_pos_cad_value = cad_params["M135"].value
+lvtp_cad_value = cad_file['Interface']["B76"].value
+fin_pos_cad_value = cad_file['Interface']["B67"].value
 
 
 def c_drag_engine():
