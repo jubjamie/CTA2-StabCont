@@ -53,13 +53,13 @@ def myfloor(x, base):
 
 # Key Aircraft Params
 c_bar = cad_file['Interface']['B53'].value
-maxthrust = 44459 * 2  # N @ takoff
+maxthrust = cad_file['Interface']['F28'].value * 2  # N @ takoff
 vto = 62.4  # m/s
 cthrust = maxthrust / qS(vto)
-cm0 = -0.0663
-cl_to = 2.678
+cm0 = cad_file['Interface']['F29'].value
+cl_to = cad_file['Interface']['F30'].value
 clt = -0.9  # Tail CL
-mtow = 35590  # kg
+mtow = cad_file['Interface']['F31'].value  # kg
 g = 9.81  # m/s/s
 h0 = cad_file['Interface']['B54'].value
 print("h0 = " + str(h0))
