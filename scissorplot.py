@@ -58,6 +58,8 @@ vto = 62.4  # m/s
 cthrust = maxthrust / qS(vto)
 cm0 = cad_file['Interface']['F29'].value
 cl_to = cad_file['Interface']['F30'].value
+cl_ld = cad_file['Interface']['F32'].value
+cm0_ld = cad_file['Interface']['F33'].value
 clt = -0.9  # Tail CL
 mtow = cad_file['Interface']['F31'].value  # kg
 g = 9.81  # m/s/s
@@ -67,6 +69,7 @@ mtow_pos_m = cad_file['Interface']['F16'].value
 mtow_pos = mtow_pos_m/c_bar  # From Mass CG File
 lvtp_cad_value = cad_file['Interface']["B76"].value
 engine_vcg_dist = cad_file['Interface']['F15'].value
+params['MainGearPos'] = 15.93
 
 
 def noseWheel():
@@ -105,7 +108,7 @@ def takeOffRotation(h):
 
 def landing(h):
     tail_moment_arm = (lvtp_cad_value / c_bar) - h0
-    lhs_top = cm0 - (cl_to*(h0-h))
+    lhs_top = cm0_ld - (cl_ld*(h0-h))
     lhs_bottom = clt * tail_moment_arm
     return lhs_top/lhs_bottom
 
@@ -113,8 +116,8 @@ def landing(h):
 def kn(h):
     kn_limit = 0.05
     tail_moment_arm = (lvtp_cad_value / c_bar) - h0  # The tail moment to h
-    a1 = 5.98  # From Horace
-    a = 5.14  # From Horace
+    a1 = 4.5  # From Horace
+    a = cad_file['Interface']['F34'].value  # From Horace
     d_e_alpha = 0.2
 
     lhs_top = kn_limit - h0 + h
