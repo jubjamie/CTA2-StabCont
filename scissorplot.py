@@ -187,7 +187,7 @@ def size_finder_range(x_h, left_y, right_y, static_y, hf, ha):
 
         for y_ar in static_y:
             x_find_a.append(y_ar)
-        print(x_find_a)
+        #print(x_find_a)
         output = [hf, min(x_find_a), hf_y]
 
     return output
@@ -195,8 +195,11 @@ def size_finder_range(x_h, left_y, right_y, static_y, hf, ha):
 
 def h_finder_from_mac(mac_pos):
     result = h0-0.25+mac_pos
-    print(result)
     return result
+
+
+def mac_finder_from_h(h):
+    return (h-h0)+0.25
 
 
 def v_bar(size):
@@ -204,7 +207,7 @@ def v_bar(size):
     print("v_bar: " + str(size*tail_moment_arm))
 
 
-def plotit(r1, r2):
+def plotit(r1, r2, search_mac):
     # Create Range of h values
     step = 0.1
     r2 = r2 + step
@@ -267,12 +270,26 @@ def plotit(r1, r2):
     the other via known fwd and aft positions"""
     # Known Delta h range
     #size = size_finder_delta(x_h, takeOffRotation(x_h), [kn(x_h)], [noseWheel()], 0.4)
-    size = size_finder_range(x_h, takeOffRotation(x_h), [kn(x_h)], [noseWheel()], h_finder_from_mac(0.05), h_finder_from_mac(0.39))
+    # Compare landing and t/o case
+    sizes = []
+    sizes_results = []
+    search_f = search_mac[0]
+    search_a = search_mac[1]
+    sizes_results.append(size_finder_range(x_h, takeOffRotation(x_h), [kn(x_h)], [noseWheel()], h_finder_from_mac(search_f),
+                                           h_finder_from_mac(search_a)))
+    sizes.append(sizes_results[-1][2])
+    sizes_results.append(size_finder_range(x_h, landing(x_h), [kn(x_h)], [noseWheel()], h_finder_from_mac(search_f),
+                                           h_finder_from_mac(search_a)))
+
+    sizes.append(sizes_results[-1][2])
+    size = sizes_results[sizes.index(max(sizes))]
     v_bar(size[2])
     plt.plot([size[0], size[1]], [size[2], size[2]])
     plt.annotate("SH/S = " + str(format(size[2], '.2f')) + " : Size = " + str(format(size[2]*params['Sarea'], '.2f')) + "m2", [size[0], size[2]+0.05])
     plt.annotate("h Range: " + str(format(size[0], '.2f')) + " <> " + str(format(size[1], '.2f')), [size[0], size[2]+0.1])
+    plt.annotate("% Mac Range: " + str(format(100*mac_finder_from_h(size[0]), '.1f')) + "% <> " + str(format(100*mac_finder_from_h(size[1]), '.1f')) + "%", [size[0], size[2]+0.15])
     print("h Range: " + str(format(size[0], '.2f')) + " <> " + str(format(size[1], '.2f')))
+    print("% Mac Range: " + str(format(mac_finder_from_h(size[0]), '.2f')) + " <> " + str(format(mac_finder_from_h(size[1]), '.2f')))
     print("SH/S = " + str(format(size[2], '.2f')) + " : Size = " + str(format(size[2]*params['Sarea'], '.2f')) + "m2")
     plt.grid(True)
     plt.legend(loc='upper right', shadow=True)
@@ -280,5 +297,4 @@ def plotit(r1, r2):
     plt.show()
 
 
-plotit(4.8, 6.25)
-
+plotit(4.8, 6.25, [0.05, 0.39])
