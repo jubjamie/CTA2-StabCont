@@ -54,7 +54,7 @@ def myfloor(x, base):
 # Key Aircraft Params
 c_bar = cad_file['Interface']['B53'].value
 maxthrust = cad_file['Interface']['F28'].value * 2  # N @ takoff
-vto = 62.4  # m/s
+vto = 58.3  # m/s
 cthrust = maxthrust / qS(vto)
 cm0 = cad_file['Interface']['F29'].value
 cl_to = cad_file['Interface']['F30'].value
@@ -297,4 +297,4 @@ def plotit(r1, r2, search_mac):
     plt.show()
 
 
-plotit(4.8, 6.25, [0.05, 0.39])
+plotit(4.8, 6.25, [0.07, 0.41])
