@@ -54,7 +54,7 @@ dcyWBN_db = -0.43  # per rad
 dcnWBN_db = -0.462  # per rad
 dcyV_db = -3.726  # per rad
 dcyV_dr = 1.892  # per rad
-c_bar = cad_file['Interface']['B53'].value
+c_bar = cad_file['Interface']['B66'].value
 print(c_bar)
 maxthrust = 44459  # N @ takoff
 cruise_thrust = 9919  # N
@@ -70,14 +70,14 @@ blade_centre = params['EngineWingPosOutboard']
 engine_scale = 0.89
 engine_intake_area = 0.16 * engine_scale
 engine_diameter = np.sqrt(engine_intake_area/np.pi)*2
-h0 = cad_file['Interface']['B54'].value
+h0 = cad_file['Interface']['B67'].value
 h0_centre = params["WingChordStart"]/c_bar
 print(h0)
 max_bank_angle = np.deg2rad(5)
 cl_vmca = 2.549
 mtow_pos = cad_file['Interface']['F16'].value/c_bar  # From Mass CG File
-lvtp_cad_value = cad_file['Interface']["B76"].value
-fin_pos_cad_value = cad_file['Interface']["B67"].value
+lvtp_cad_value = cad_file['Interface']["B89"].value
+fin_pos_cad_value = cad_file['Interface']["B80"].value
 
 
 def c_drag_engine():
