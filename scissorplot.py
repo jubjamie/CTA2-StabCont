@@ -7,7 +7,7 @@ import filepath1
 cad_file_path = filepath1.cad_file_path
 # cad_file_path = '../../../../2. TechInt/Project Space/CAD/CADParametersNewAero.xlsx'
 cad_file = load_workbook(filename=cad_file_path, data_only=True)
-cad_params = cad_file['Sheet1']  # Load into Sheet1
+cad_params = cad_file['Sheet1-80']  # Load into Sheet1
 
 # Init list holders
 param_name = []
@@ -52,28 +52,28 @@ def myfloor(x, base):
 
 
 # Key Aircraft Params
-c_bar = cad_file['Interface']['B72'].value
-maxthrust = cad_file['Interface']['F28'].value * 2  # N @ takoff
+c_bar = cad_file['Interface-80']['B72'].value
+maxthrust = cad_file['Interface-80']['F28'].value * 2  # N @ takoff
 vto = 58.14  # m/s
 cthrust = maxthrust / qS(vto)
-cm0 = cad_file['Interface']['F29'].value
-cl_to = cad_file['Interface']['F30'].value
-cl_ld = cad_file['Interface']['F32'].value
-cm0_ld = cad_file['Interface']['F33'].value
+cm0 = cad_file['Interface-80']['F29'].value
+cl_to = cad_file['Interface-80']['F30'].value
+cl_ld = cad_file['Interface-80']['F32'].value
+cm0_ld = cad_file['Interface-80']['F33'].value
 clt = -0.85  # Tail CL
-mtow = cad_file['Interface']['F31'].value  # kg
+mtow = cad_file['Interface-80']['F31'].value  # kg
 g = 9.81  # m/s/s
-h0 = cad_file['Interface']['B73'].value
+h0 = cad_file['Interface-80']['B73'].value
 print("h0 = " + str(h0))
-mtow_pos_m = cad_file['Interface']['F16'].value
+mtow_pos_m = cad_file['Interface-80']['F16'].value
 mtow_pos = mtow_pos_m/c_bar  # From Mass CG File
-lvtp_cad_value = cad_file['Interface']["B95"].value
-engine_vcg_dist = cad_file['Interface']['F15'].value
+lvtp_cad_value = cad_file['Interface-80']["B95"].value
+engine_vcg_dist = cad_file['Interface-80']['F15'].value
 # params['MainGearPos'] = 15.93
 a1 = 4.5  # From Horace
-a = cad_file['Interface']['F34'].value  # From Horace
-a_to = cad_file['Interface']['F35'].value  # From Horace
-a_ld = cad_file['Interface']['F36'].value  # From Horace
+a = cad_file['Interface-80']['F34'].value  # From Horace
+a_to = cad_file['Interface-80']['F35'].value  # From Horace
+a_ld = cad_file['Interface-80']['F36'].value  # From Horace
 
 
 def noseWheel():
@@ -297,4 +297,4 @@ def plotit(r1, r2, search_mac):
     plt.show()
 
 
-plotit(4.8, 6.25, [0.07, 0.45])
+plotit(4.3, 5.8, [0.07, 0.45])
