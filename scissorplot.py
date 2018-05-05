@@ -52,22 +52,22 @@ def myfloor(x, base):
 
 
 # Key Aircraft Params
-c_bar = cad_file['Interface']['B66'].value
+c_bar = cad_file['Interface']['B72'].value
 maxthrust = cad_file['Interface']['F28'].value * 2  # N @ takoff
-vto = 59.9  # m/s
+vto = 58.14  # m/s
 cthrust = maxthrust / qS(vto)
 cm0 = cad_file['Interface']['F29'].value
 cl_to = cad_file['Interface']['F30'].value
 cl_ld = cad_file['Interface']['F32'].value
 cm0_ld = cad_file['Interface']['F33'].value
-clt = -0.8  # Tail CL
+clt = -0.85  # Tail CL
 mtow = cad_file['Interface']['F31'].value  # kg
 g = 9.81  # m/s/s
-h0 = cad_file['Interface']['B67'].value
+h0 = cad_file['Interface']['B73'].value
 print("h0 = " + str(h0))
 mtow_pos_m = cad_file['Interface']['F16'].value
 mtow_pos = mtow_pos_m/c_bar  # From Mass CG File
-lvtp_cad_value = cad_file['Interface']["B89"].value
+lvtp_cad_value = cad_file['Interface']["B95"].value
 engine_vcg_dist = cad_file['Interface']['F15'].value
 # params['MainGearPos'] = 15.93
 a1 = 4.5  # From Horace
