@@ -297,4 +297,4 @@ def plotit(r1, r2, search_mac):
     plt.show()
 
 
-plotit(4.3, 5.8, [0.07, 0.45])
+plotit(4.3, 5.8, [0.11, 0.41])
