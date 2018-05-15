@@ -9,10 +9,17 @@ Stability and Control Calculations for GBDP CTA Project. Key aims of this work:
 These will be sized according to a number of different methods and scenarios. For example, one engine inoperative (OEI) cases or static stability margins.
 
 ## Sizing Graphs
-### Scissor Plot
+### Scissor Plot - Required Tail
 Current Scissor Plot from <a href="scissorplot.py">scissorplot.py</a>.
 <p align="center">
 <img src="tailplot.png?raw=true" />
+</p>
+<br />
+
+### Scissor Plot - Using Common Tail
+Current Scissor Plot from <a href="scissorplot.py">scissorplot.py</a>.
+<p align="center">
+<img src="tailplot-80-common.png?raw=true" />
 </p>
 <br />
 
