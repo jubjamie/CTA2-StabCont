@@ -207,7 +207,7 @@ def v_bar(size):
     print("v_bar: " + str(size*tail_moment_arm))
 
 
-def plotit(r1, r2, search_mac):
+def plotit(r1, r2, search_mac, common=False):
     # Create Range of h values
     step = 0.1
     r2 = r2 + step
@@ -293,8 +293,14 @@ def plotit(r1, r2, search_mac):
     print("SH/S = " + str(format(size[2], '.2f')) + " : Size = " + str(format(size[2]*params['Sarea'], '.2f')) + "m2")
     plt.grid(True)
     plt.legend(loc='upper right', shadow=True)
-    plt.savefig("tailplot.png")
+    if common is True:
+        plt.title("CTA2-80 HTP Scissor Plot with common tail from CTA2-100", size=20)
+        plt.savefig("tailplot-80-common.png")
+    else:
+        plt.title("CTA2-80 HTP Scissor Plot", size=16)
+        plt.savefig("tailplot.png")
     plt.show()
 
 
 plotit(4.3, 5.8, [0.11, 0.41])
+plotit(4.3, 5.8, [0.08, 0.53], common=True)
