@@ -294,10 +294,10 @@ def plotit(r1, r2, search_mac, common=False):
     plt.grid(True)
     plt.legend(loc='upper right', shadow=True)
     if common is True:
-        plt.title("CTA2-80 HTP Scissor Plot with common tail from CTA2-100", size=20)
+        plt.title("CTA2-80 HTP Scissor Plot with common tail from CTA2-100", size=16)
         plt.savefig("tailplot-80-common.png")
     else:
-        plt.title("CTA2-80 HTP Scissor Plot", size=16)
+        plt.title("CTA2-80 HTP Scissor Plot", size=20)
         plt.savefig("tailplot.png")
     plt.show()
 
