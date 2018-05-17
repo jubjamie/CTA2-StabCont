@@ -239,7 +239,7 @@ def plotit(r1, r2, search_mac, common=False, ylims=None):
     y_heads.append(max(landing(x_h)))
 
     """This section constrains the graph correctly"""
-    if ylims is not None:
+    if ylims is None:
         max_y = myceil(max(y_heads), step)
         #print(max_y)
         min_y = myfloor((min(y_tails)), step)
