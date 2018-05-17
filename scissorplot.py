@@ -129,6 +129,13 @@ def kn(h):
     return lhs_top/lhs_bottom
 
 
+def get_kn(fraction, h):
+    tail_moment_arm = (lvtp_cad_value / c_bar) - h0  # The tail moment to h
+    d_e_alpha = 0.2
+    return h0-h+(fraction*tail_moment_arm*(a1/a)*(1-d_e_alpha))
+
+
+
 def size_finder_delta(x_h, left_y, right_y, static_y, hrange):
     y_find = []
     x_find = []
@@ -207,7 +214,7 @@ def v_bar(size):
     print("v_bar: " + str(size*tail_moment_arm))
 
 
-def plotit(r1, r2, search_mac, common=False):
+def plotit(r1, r2, search_mac, common=False, ylims=None):
     # Create Range of h values
     step = 0.1
     r2 = r2 + step
@@ -232,10 +239,15 @@ def plotit(r1, r2, search_mac, common=False):
     y_heads.append(max(landing(x_h)))
 
     """This section constrains the graph correctly"""
-    max_y = myceil(max(y_heads), step)
-    #print(max_y)
-    min_y = myfloor((min(y_tails)), step)
-    #print(min_y)
+    if ylims is not None:
+        max_y = myceil(max(y_heads), step)
+        #print(max_y)
+        min_y = myfloor((min(y_tails)), step)
+        #print(min_y)
+    else:
+        max_y = ylims[1]
+        min_y = ylims[0]
+
     plt.ylim(min_y, max_y)
     plt.xlim(r1, r2-0.1)
 
@@ -251,15 +263,15 @@ def plotit(r1, r2, search_mac, common=False):
     plt.plot([h0, h0], [ref_tail, ref_head])
     plt.annotate("Wing h0 Position", [h0, ref_head])
     # Plot MTOW CoG position (approx)
-    plt.plot([mtow_pos, mtow_pos], [ref_tail, ref_head+(ref_head-ref_tail)])
-    plt.annotate("MTOW C.o.G", [mtow_pos, ref_head+(ref_head-ref_tail)])
+    #plt.plot([mtow_pos, mtow_pos], [ref_tail, ref_head+(ref_head-ref_tail)])
+    #plt.annotate("MTOW C.o.G", [mtow_pos, ref_head+(ref_head-ref_tail)])
     # Plot Wing LE/TE position (approx)
     wingLE = (params['WingCentrePoint']-(params['Cr']/2))/c_bar
     wingTE = (params['WingCentrePoint'] + (params['Cr'] / 2)) / c_bar
-    plt.plot([wingLE, wingLE], [ref_tail, ref_head])
-    plt.annotate("Wing LE", [wingLE, ref_head])
-    plt.plot([wingTE, wingTE], [ref_tail, ref_head])
-    plt.annotate("Wing TE", [wingTE, ref_head])
+    #plt.plot([wingLE, wingLE], [ref_tail, ref_head])
+    #plt.annotate("Wing LE", [wingLE, ref_head])
+    #plt.plot([wingTE, wingTE], [ref_tail, ref_head])
+    #plt.annotate("Wing TE", [wingTE, ref_head])
     #Main Gear Position
     mainpos = params['MainGearPos']/c_bar
     plt.plot([mainpos, mainpos], [ref_tail, ref_head])
@@ -284,13 +296,14 @@ def plotit(r1, r2, search_mac, common=False):
     sizes.append(sizes_results[-1][2])
     size = sizes_results[sizes.index(max(sizes))]
     v_bar(size[2])
-    plt.plot([size[0], size[1]], [size[2], size[2]])
+    plt.plot([size[0], size[1]], [size[2], size[2]], 'c')
     plt.annotate("SH/S = " + str(format(size[2], '.2f')) + " : Size = " + str(format(size[2]*params['Sarea'], '.2f')) + "m2", [size[0], size[2]+0.05])
     plt.annotate("h Range: " + str(format(size[0], '.2f')) + " <> " + str(format(size[1], '.2f')), [size[0], size[2]+0.1])
     plt.annotate("% Mac Range: " + str(format(100*mac_finder_from_h(size[0]), '.1f')) + "% <> " + str(format(100*mac_finder_from_h(size[1]), '.1f')) + "%", [size[0], size[2]+0.15])
     print("h Range: " + str(format(size[0], '.2f')) + " <> " + str(format(size[1], '.2f')))
     print("% Mac Range: " + str(format(mac_finder_from_h(size[0]), '.2f')) + " <> " + str(format(mac_finder_from_h(size[1]), '.2f')))
     print("SH/S = " + str(format(size[2], '.2f')) + " : Size = " + str(format(size[2]*params['Sarea'], '.2f')) + "m2")
+    print("Min Kn = " + str(format(get_kn(size[2],size[1]), '.2f')))
     plt.grid(True)
     plt.legend(loc='upper right', shadow=True)
     if common is True:
@@ -302,5 +315,5 @@ def plotit(r1, r2, search_mac, common=False):
     plt.show()
 
 
-plotit(4.3, 5.8, [0.11, 0.41])
-plotit(4.3, 5.8, [0.08, 0.53], common=True)
+plotit(4.4, 5.4, [0.11, 0.41], ylims=[-0.4, 0.6])
+plotit(4.4, 5.4, [0.08, 0.53], ylims=[-0.4, 0.6], common=True)
